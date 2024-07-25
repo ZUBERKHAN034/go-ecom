@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -64,6 +63,6 @@ func NewMySQL() (*sql.DB, error) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to the database successfully!")
+	log.Println("Connected to the database successfully!")
 	return db, nil
 }

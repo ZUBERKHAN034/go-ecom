@@ -28,8 +28,8 @@ func initEnv() Envs {
 	// secretKey := os.Getenv("SECRET_KEY")
 
 	return Envs{
-		// PublicHost: os.Getenv("DB_PUBLIC_HOST"),
-		// Port:       os.Getenv("DB_PORT"),
+		PublicHost: os.Getenv("DB_PUBLIC_HOST"),
+		Port:       os.Getenv("DB_PORT"),
 		DBUser:     os.Getenv("DB_USER"),
 		DBPassword: os.Getenv("DB_PASSWORD"),
 		DBAddress:  os.Getenv("DB_ADDRESS"),
