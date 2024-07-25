@@ -12,7 +12,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-func NewMySQL() (*sql.DB, error) {
+func ConnectMySQL() (*sql.DB, error) {
 	// Construct the path to ca.pem
 	dir, err := os.Getwd()
 	if err != nil {

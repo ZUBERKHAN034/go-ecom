@@ -14,7 +14,7 @@ type APIServer struct {
 	db   *sql.DB
 }
 
-func NewAPIServer(addr string, db *sql.DB) *APIServer {
+func InitAPIServer(addr string, db *sql.DB) *APIServer {
 	return &APIServer{
 		addr: addr,
 		db:   db,

@@ -10,12 +10,12 @@ import (
 func main() {
 	addr := ":8080"
 
-	db, err := db.NewMySQL()
+	db, err := db.ConnectMySQL()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	server := api.NewAPIServer(addr, db)
+	server := api.InitAPIServer(addr, db)
 	if err := server.RUN(); err != nil {
 		log.Fatal(err)
 	}
