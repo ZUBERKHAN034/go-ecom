@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ZUBERKHAN034/go-ecom/config"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -18,7 +18,7 @@ func ConnectMySQL() (*sql.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	caPath := filepath.Join(dir, "db", "ca.pem")
+	caPath := filepath.Join(dir, "pkg/db", "ca.pem")
 
 	// Read the CA certificate
 	caCert, err := os.ReadFile(caPath)
@@ -57,7 +57,7 @@ func ConnectMySQL() (*sql.DB, error) {
 	}
 	defer db.Close()
 
-	// Test the connection
+	// Ping the connection
 	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)

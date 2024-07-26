@@ -9,11 +9,12 @@ import (
 
 type Envs struct {
 	PublicHost string
-	Port       string
+	DBPort     string
 	DBUser     string
 	DBPassword string
 	DBAddress  string
 	DBName     string
+	Port       string
 }
 
 var Env = initEnv()
@@ -29,10 +30,11 @@ func initEnv() Envs {
 
 	return Envs{
 		PublicHost: os.Getenv("DB_PUBLIC_HOST"),
-		Port:       os.Getenv("DB_PORT"),
+		DBPort:     os.Getenv("DB_PORT"),
 		DBUser:     os.Getenv("DB_USER"),
 		DBPassword: os.Getenv("DB_PASSWORD"),
 		DBAddress:  os.Getenv("DB_ADDRESS"),
 		DBName:     os.Getenv("DB_NAME"),
+		Port:       os.Getenv("PORT"),
 	}
 }

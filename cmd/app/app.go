@@ -1,11 +1,11 @@
-package api
+package app
 
 import (
 	"database/sql"
 	"log"
 	"net/http"
 
-	"github.com/ZUBERKHAN034/go-ecom/service/user"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/routes/user"
 	"github.com/gorilla/mux"
 )
 
@@ -25,10 +25,9 @@ func (apiServer *APIServer) RUN() error {
 	pathPrefix := "/api/v1"
 
 	router := mux.NewRouter()
-	subRouter := router.PathPrefix(pathPrefix).Subrouter()
+	user.UserRoutes(router)
 
-	userHandler := user.NewHandler()
-	userHandler.RegisterRoutes(subRouter)
+	http.Handle(pathPrefix, router)
 
 	log.Println("Listening on", apiServer.addr)
 	return http.ListenAndServe(apiServer.addr, router)
