@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ZUBERKHAN034/go-ecom/pkg/routes/user"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/routes"
 	"github.com/gorilla/mux"
 )
 
@@ -22,12 +22,9 @@ func InitAPIServer(addr string, db *sql.DB) *APIServer {
 }
 
 func (apiServer *APIServer) RUN() error {
-	pathPrefix := "/api/v1"
-
 	router := mux.NewRouter()
-	user.UserRoutes(router)
-
-	http.Handle(pathPrefix, router)
+	routes.RegisterRoutes(router)
+	http.Handle("/", router)
 
 	log.Println("Listening on", apiServer.addr)
 	return http.ListenAndServe(apiServer.addr, router)

@@ -1,21 +1,11 @@
 package book
 
 import (
+	"fmt"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
-type Handler struct {
+func Book(res http.ResponseWriter, req *http.Request) {
+	fmt.Println("Book service")
+	res.Write([]byte("Hello Book Service"))
 }
-
-func NewHandler() *Handler {
-	return &Handler{}
-}
-
-func (handler *Handler) RegisterRoutes(router *mux.Router) {
-
-	router.HandleFunc("/book", handler.book).Methods("POST")
-}
-
-func (handler *Handler) book(res http.ResponseWriter, req *http.Request) {}
