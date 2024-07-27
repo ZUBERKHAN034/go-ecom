@@ -2,9 +2,9 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
+	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/types"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
@@ -12,57 +12,73 @@ import (
 
 type userService struct{}
 
+// Method - Login
+// Description - Login user
+// Params - res http.ResponseWriter, req *http.Request
+// Returns - any
 func (u *userService) Login(res http.ResponseWriter, req *http.Request) {
 	var payload types.LoginUserPayload
 
-	err := utils.ParseJSON(req, &payload)
+	// Parse the request body
+	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		utils.WriteError(res, http.StatusBadRequest, err)
+		lib.WriteError(res, http.StatusBadRequest, err)
 		return
 	}
 
 	// Check if user exists
 	user := models.User.GetByEmail(payload.Email)
 	if user.ID == 0 {
-		utils.WriteError(res, http.StatusBadRequest, errors.New("user not found"))
+		lib.WriteError(res, http.StatusBadRequest, errors.New("user not found"))
 		return
 	}
-
-	fmt.Println("User", user)
 
 	// Check if password is correct
-	if !models.User.ComparePassword(user.Password, payload.Password) {
-		utils.WriteError(res, http.StatusBadRequest, errors.New("invalid password"))
+	if !utils.ComparePassword(user.Password, payload.Password) {
+		lib.WriteError(res, http.StatusBadRequest, errors.New("invalid password"))
 		return
 	}
 
-	utils.WriteJSON(res, http.StatusOK, user)
+	lib.WriteSuccess(res, http.StatusOK, "user logged in successfully")
 }
 
+// Method - Register
+// Description - Register user
+// Params - res http.ResponseWriter, req *http.Request
+// Returns - any
 func (u *userService) Register(res http.ResponseWriter, req *http.Request) {
 	var payload types.RegisterUserPayload
 
-	err := utils.ParseJSON(req, &payload)
+	// Parse the request body
+	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		utils.WriteError(res, http.StatusBadRequest, err)
+		lib.WriteError(res, http.StatusBadRequest, err)
 		return
 	}
 
 	// Check if user exists
 	if user := models.User.GetByEmail(payload.Email); user.ID != 0 {
-		utils.WriteError(res, http.StatusBadRequest, errors.New("user already exists"))
+		lib.WriteError(res, http.StatusBadRequest, errors.New("user already exists"))
 		return
 	}
 
+	// Hash the password
+	hashedPassword, err := utils.HashPassword(payload.Password)
+	if err != nil {
+		lib.WriteError(res, http.StatusInternalServerError, err)
+		return
+	}
+	payload.Password = hashedPassword
+
 	// Create the user
-	newUser := models.User.Create((&models.UserSchema{
+	models.User.Create((&models.UserSchema{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,
 		Password:  payload.Password,
 	}))
 
-	utils.WriteJSON(res, http.StatusOK, newUser)
+	lib.WriteSuccess(res, http.StatusCreated, "user Registered successfully")
 }
 
 var User = &userService{}

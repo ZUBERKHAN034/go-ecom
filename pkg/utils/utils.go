@@ -1,39 +1,17 @@
 package utils
 
-import (
-	"encoding/json"
-	"net/http"
-)
+import "golang.org/x/crypto/bcrypt"
 
-// CustomError represents a custom error with a message.
-type CustomError struct {
-	Message string
-}
-
-func (customError *CustomError) Error() string {
-	return customError.Message
-}
-
-func ParseJSON(req *http.Request, payload interface{}) error {
-	if req.Body == nil {
-		return &CustomError{Message: "missing request body"}
-	}
-
-	err := json.NewDecoder(req.Body).Decode(payload)
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return &CustomError{Message: "failed to decode request body"}
+		return "", err
 	}
 
-	return nil
+	return string(hash), nil
 }
 
-func WriteJSON(res http.ResponseWriter, status int, val any) error {
-	res.Header().Add("Content-Type", "application/json")
-	res.WriteHeader(status)
-
-	return json.NewEncoder(res).Encode(val)
-}
-
-func WriteError(res http.ResponseWriter, status int, err error) {
-	WriteJSON(res, status, map[string]string{"error": err.Error()})
+func ComparePassword(hashedPassword string, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
 }

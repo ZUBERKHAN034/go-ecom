@@ -38,8 +38,4 @@ func (u *UserSchema) GetByID(id uint) *UserSchema {
 	return &user
 }
 
-func (u *UserSchema) ComparePassword(comparePassword string, password string) bool {
-	return comparePassword == password
-}
-
 var User = &UserSchema{}
