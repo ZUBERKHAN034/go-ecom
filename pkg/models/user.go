@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/db"
 	"gorm.io/gorm"
@@ -25,37 +24,25 @@ func init() {
 }
 
 func (u *UserSchema) Create(user *UserSchema) *UserSchema {
-	result := dbInstance.Create(&user)
-	if result.Error != nil {
-		log.Printf("Failed to create user: %v", result.Error)
-	}
-	log.Println("User", user)
+	dbInstance.Create(&user)
 	return user
 }
 
 func (u *UserSchema) GetByEmail(email string) *UserSchema {
 	var user UserSchema
-	result := dbInstance.Where("email = ?", email).First(&user)
-	if result.Error != nil {
-		log.Printf("Failed to get user by email: %v", result.Error)
-	}
-	log.Println("User", &user)
+	dbInstance.Where("email = ?", email).First(&user)
 	return &user
 }
 
 func (u *UserSchema) GetByID(id uint) *UserSchema {
 	var user UserSchema
-	result := dbInstance.First(&user, id)
-	if result.Error != nil {
-		log.Printf("Failed to get user by ID: %v", result.Error)
-	}
-	log.Println("User", user)
+	dbInstance.First(&user, id)
 	return &user
 }
 
-func (u *UserSchema) ComparePassword(password string) bool {
-	fmt.Println("DB User Password", u.Password, "User Password", password)
-	return u.Password == password
+func (u *UserSchema) ComparePassword(comparePassword string, password string) bool {
+	fmt.Println("DB User Password", comparePassword, "User Password", password)
+	return comparePassword == password
 }
 
 var User = &UserSchema{}

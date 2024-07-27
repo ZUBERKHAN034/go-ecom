@@ -31,7 +31,7 @@ func (u *userService) Login(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("User", user)
 
 	// Check if password is correct
-	if !models.User.ComparePassword(payload.Password) {
+	if !models.User.ComparePassword(user.Password, payload.Password) {
 		utils.WriteError(res, http.StatusBadRequest, errors.New("invalid password"))
 		return
 	}
