@@ -1,0 +1,98 @@
+definitions:
+  controllers.LoginUserPayload:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  controllers.RegisterUserPayload:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is E-Commerce API server
+  termsOfService: http://github.com/ZUBERKHAN034/go-ecom
+  title: E-Commerce API
+  version: "1.0"
+paths:
+  /book:
+    get:
+      consumes:
+      - application/json
+      description: Get Book
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hello Book Service
+          schema:
+            type: string
+      summary: Get Book
+      tags:
+      - Book
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: User Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginUserPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid password
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register
+      parameters:
+      - description: User Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterUserPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User Registered successfully
+          schema:
+            type: string
+        "400":
+          description: User already exists
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Register
+      tags:
+      - User
+swagger: "2.0"

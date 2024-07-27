@@ -1,4 +1,4 @@
-package services
+package controllers
 
 import (
 	"errors"
@@ -6,18 +6,38 @@ import (
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
-	"github.com/ZUBERKHAN034/go-ecom/pkg/types"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
 )
 
-type userService struct{}
+type LoginUserPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
-// Method - Login
-// Description - Login user
-// Params - res http.ResponseWriter, req *http.Request
-// Returns - any
-func (u *userService) Login(res http.ResponseWriter, req *http.Request) {
-	var payload types.LoginUserPayload
+type RegisterUserPayload struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+}
+
+type userController struct{}
+
+// Login godoc
+//
+// @Summary Login
+// @Description Login
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param payload body LoginUserPayload true "User Payload"
+// @Success 200 {string} string "User logged in successfully"
+// @Failure 400 {string} string "Invalid request payload"
+// @Failure 400 {string} string "User not found"
+// @Failure 400 {string} string "Invalid password"
+// @Router /user/login [post]
+func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
+	var payload LoginUserPayload
 
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
@@ -42,12 +62,21 @@ func (u *userService) Login(res http.ResponseWriter, req *http.Request) {
 	lib.WriteSuccess(res, http.StatusOK, "user logged in successfully")
 }
 
-// Method - Register
-// Description - Register user
-// Params - res http.ResponseWriter, req *http.Request
-// Returns - any
-func (u *userService) Register(res http.ResponseWriter, req *http.Request) {
-	var payload types.RegisterUserPayload
+// Register godoc
+//
+// @Summary Register
+// @Description Register
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param payload body RegisterUserPayload true "User Payload"
+// @Success 201 {string} string "User Registered successfully"
+// @Failure 400 {string} string "Invalid request payload"
+// @Failure 400 {string} string "User already exists"
+// @Failure 500 {string} string "Internal server error"
+// @Router /user/register [post]
+func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
+	var payload RegisterUserPayload
 
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
@@ -81,4 +110,4 @@ func (u *userService) Register(res http.ResponseWriter, req *http.Request) {
 	lib.WriteSuccess(res, http.StatusCreated, "user Registered successfully")
 }
 
-var User = &userService{}
+var User = &userController{}

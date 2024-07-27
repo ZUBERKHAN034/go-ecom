@@ -14,3 +14,6 @@ test:
 
 run-dev:
 	air -c .air.toml
+
+run-swagger:
+	cd pkg/ && swag init -g ../cmd/main.go	

@@ -1,10 +1,12 @@
 package routes
 
 import (
-	"github.com/ZUBERKHAN034/go-ecom/pkg/services"
+	"net/http"
+
+	"github.com/ZUBERKHAN034/go-ecom/pkg/controllers"
 	"github.com/gorilla/mux"
 )
 
 func BookRoutes(router *mux.Router) {
-	router.HandleFunc("/book", services.Book.GetBook).Methods("GET")
+	router.HandleFunc("/book", controllers.Book.GetBook).Methods(http.MethodGet)
 }

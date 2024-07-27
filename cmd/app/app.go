@@ -21,7 +21,6 @@ func InitAPIServer(addr string) *APIServer {
 func (apiServer *APIServer) RUN() error {
 	router := mux.NewRouter()
 	routes.InitRoutes(router)
-	http.Handle("/", router)
 
 	log.Println("Listening on", apiServer.addr)
 	return http.ListenAndServe(apiServer.addr, router)
