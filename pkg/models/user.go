@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/ZUBERKHAN034/go-ecom/pkg/db"
 	"gorm.io/gorm"
 )
@@ -41,7 +39,6 @@ func (u *UserSchema) GetByID(id uint) *UserSchema {
 }
 
 func (u *UserSchema) ComparePassword(comparePassword string, password string) bool {
-	fmt.Println("DB User Password", comparePassword, "User Password", password)
 	return comparePassword == password
 }
 
