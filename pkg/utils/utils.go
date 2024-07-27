@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 )
 
@@ -15,21 +14,17 @@ func (customError *CustomError) Error() string {
 	return customError.Message
 }
 
-func ParseJSON(req *http.Request, payload any) error {
+func ParseJSON(req *http.Request, payload interface{}) error {
 	if req.Body == nil {
 		return &CustomError{Message: "missing request body"}
 	}
 
-	body, err := io.ReadAll(req.Body)
+	err := json.NewDecoder(req.Body).Decode(payload)
 	if err != nil {
-		return &CustomError{Message: "failed to read request body"}
+		return &CustomError{Message: "failed to decode request body"}
 	}
 
-	if len(body) == 0 {
-		return &CustomError{Message: "request body is empty"}
-	}
-
-	return json.NewDecoder(req.Body).Decode(payload)
+	return nil
 }
 
 func WriteJSON(res http.ResponseWriter, status int, val any) error {

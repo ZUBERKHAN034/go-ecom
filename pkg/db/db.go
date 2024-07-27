@@ -3,16 +3,19 @@ package db
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"database/sql"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
 	"github.com/go-sql-driver/mysql"
+	gormMysql "gorm.io/driver/mysql" // Import the gorm mysql driver with an alias
+	"gorm.io/gorm"
 )
 
-func ConnectMySQL() (*sql.DB, error) {
+var dbInstance *gorm.DB
+
+func Connect() error {
 	// Construct the path to ca.pem
 	dir, err := os.Getwd()
 	if err != nil {
@@ -32,37 +35,48 @@ func ConnectMySQL() (*sql.DB, error) {
 		log.Fatal("Failed to append CA certificate")
 	}
 
-	// Configure the MySQL driver with SSL/TLS
-	cfg := mysql.Config{
+	// Register a custom TLS config
+	tlsConfig := &tls.Config{
+		RootCAs: certPool,
+	}
+	mysql.RegisterTLSConfig("custom", tlsConfig)
+
+	// Configure the MySQL DSN
+	dsnConfig := &mysql.Config{
 		User:      config.Env.DBUser,
 		Passwd:    config.Env.DBPassword,
 		Addr:      config.Env.DBAddress,
 		DBName:    config.Env.DBName,
+		ParseTime: true,
 		TLSConfig: "custom",
 		Net:       "tcp",
 	}
+	dsn := dsnConfig.FormatDSN()
 
-	// Register a custom TLS config
-	err = mysql.RegisterTLSConfig("custom", &tls.Config{
-		RootCAs: certPool,
-	})
+	// Open a connection to the database using the gorm mysql driver
+	db, err := gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Open a connection to the database
-	db, err := sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	// Ping the connection
-	err = db.Ping()
+	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	err = sqlDB.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Set the dbInstance
+	dbInstance = db
+
 	log.Println("Connected to the database successfully!")
-	return db, nil
+	return nil
+}
+
+func GetDB() *gorm.DB {
+	return dbInstance
 }

@@ -5,7 +5,6 @@ import (
 
 	"github.com/ZUBERKHAN034/go-ecom/cmd/app"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
-	"github.com/ZUBERKHAN034/go-ecom/pkg/db"
 )
 
 func main() {
@@ -14,12 +13,7 @@ func main() {
 		addr = ":" + config.Env.Port
 	}
 
-	db, err := db.ConnectMySQL()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	server := app.InitAPIServer(addr, db)
+	server := app.InitAPIServer(addr)
 	if err := server.RUN(); err != nil {
 		log.Fatal(err)
 	}

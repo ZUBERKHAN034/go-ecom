@@ -1,7 +1,6 @@
 package app
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
@@ -11,19 +10,17 @@ import (
 
 type APIServer struct {
 	addr string
-	db   *sql.DB
 }
 
-func InitAPIServer(addr string, db *sql.DB) *APIServer {
+func InitAPIServer(addr string) *APIServer {
 	return &APIServer{
 		addr: addr,
-		db:   db,
 	}
 }
 
 func (apiServer *APIServer) RUN() error {
 	router := mux.NewRouter()
-	routes.RegisterRoutes(router)
+	routes.InitRoutes(router)
 	http.Handle("/", router)
 
 	log.Println("Listening on", apiServer.addr)
