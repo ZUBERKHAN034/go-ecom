@@ -1,11 +1,8 @@
 package models
 
 import (
-	"github.com/ZUBERKHAN034/go-ecom/pkg/db"
 	"gorm.io/gorm"
 )
-
-var dbInstance *gorm.DB
 
 type UserSchema struct {
 	gorm.Model
@@ -15,26 +12,20 @@ type UserSchema struct {
 	Password  string `json:"password"`
 }
 
-func init() {
-	db.Connect()
-	dbInstance = db.GetDB()
-	dbInstance.AutoMigrate(&UserSchema{})
-}
-
 func (u *UserSchema) Create(user *UserSchema) *UserSchema {
-	dbInstance.Create(&user)
+	DBInstance.Create(&user)
 	return user
 }
 
 func (u *UserSchema) GetByEmail(email string) *UserSchema {
 	var user UserSchema
-	dbInstance.Where("email = ?", email).First(&user)
+	DBInstance.Where("email = ?", email).First(&user)
 	return &user
 }
 
 func (u *UserSchema) GetByID(id uint) *UserSchema {
 	var user UserSchema
-	dbInstance.First(&user, id)
+	DBInstance.First(&user, id)
 	return &user
 }
 

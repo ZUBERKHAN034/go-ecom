@@ -9,6 +9,8 @@ import (
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
 )
 
+type userController struct{}
+
 type LoginUserPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -20,8 +22,6 @@ type RegisterUserPayload struct {
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
-
-type userController struct{}
 
 // Login godoc
 //

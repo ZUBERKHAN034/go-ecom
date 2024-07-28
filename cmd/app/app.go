@@ -23,5 +23,7 @@ func (apiServer *APIServer) RUN() error {
 	routes.InitRoutes(router)
 
 	log.Println("Listening on", apiServer.addr)
+	log.Println("Swagger UI is available at http://localhost:8080/swagger/index.html")
+
 	return http.ListenAndServe(apiServer.addr, router)
 }

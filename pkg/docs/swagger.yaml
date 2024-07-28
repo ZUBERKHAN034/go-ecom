@@ -1,4 +1,15 @@
 definitions:
+  controllers.CreateBookPayload:
+    properties:
+      author:
+        type: string
+      pages:
+        type: integer
+      price:
+        type: integer
+      title:
+        type: string
+    type: object
   controllers.LoginUserPayload:
     properties:
       email:
@@ -37,6 +48,31 @@ paths:
           schema:
             type: string
       summary: Get Book
+      tags:
+      - Book
+    post:
+      consumes:
+      - application/json
+      description: Create Book
+      parameters:
+      - description: Book Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateBookPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Book created successfully
+          schema:
+            type: string
+        "400":
+          description: Book already exists
+          schema:
+            type: string
+      summary: Create Book
       tags:
       - Book
   /user/login:
