@@ -15,6 +15,12 @@ func (b *BookSchema) Create(book *BookSchema) *BookSchema {
 	return book
 }
 
+func (b *BookSchema) GetAll() []BookSchema {
+	var books []BookSchema
+	DBInstance.Find(&books)
+	return books
+}
+
 func (b *BookSchema) GetByTitle(title string) *BookSchema {
 	var book BookSchema
 	DBInstance.Where("title = ?", title).First(&book)

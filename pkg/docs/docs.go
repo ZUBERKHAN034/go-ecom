@@ -17,27 +17,6 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/book": {
-            "get": {
-                "description": "Get Book",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Book"
-                ],
-                "summary": "Get Book",
-                "responses": {
-                    "200": {
-                        "description": "Hello Book Service",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "Create Book",
                 "consumes": [
@@ -70,6 +49,29 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Book already exists",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/books": {
+            "get": {
+                "description": "Get Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get Books",
+                "responses": {
+                    "200": {
+                        "description": "Hello Book Service",
                         "schema": {
                             "type": "string"
                         }

@@ -30,7 +30,6 @@ type CreateBookPayload struct {
 // @Failure 400 {string} string "Book already exists"
 // @Router /book [post]
 func (b *bookController) CreateBook(res http.ResponseWriter, req *http.Request) {
-	// write code create a demo book
 	var payload CreateBookPayload
 
 	// Parse the request body
@@ -60,15 +59,16 @@ func (b *bookController) CreateBook(res http.ResponseWriter, req *http.Request) 
 
 //	GetBook godoc
 //
-// @Summary Get Book
+// @Summary Get Books
 // @Description Get Book
 // @Tags Book
 // @Accept json
 // @Produce json
 // @Success 200 {string} string "Hello Book Service"
-// @Router /book [get]
-func (b *bookController) GetBook(res http.ResponseWriter, req *http.Request) {
-	res.Write([]byte("Hello Book Service"))
+// @Router /books [get]
+func (b *bookController) GetBooks(res http.ResponseWriter, req *http.Request) {
+	books := models.Book.GetAll()
+	lib.WriteJSON(res, http.StatusOK, books)
 }
 
 var Book = &bookController{}

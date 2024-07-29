@@ -36,20 +36,6 @@ info:
   version: "1.0"
 paths:
   /book:
-    get:
-      consumes:
-      - application/json
-      description: Get Book
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Hello Book Service
-          schema:
-            type: string
-      summary: Get Book
-      tags:
-      - Book
     post:
       consumes:
       - application/json
@@ -73,6 +59,21 @@ paths:
           schema:
             type: string
       summary: Create Book
+      tags:
+      - Book
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: Get Book
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hello Book Service
+          schema:
+            type: string
+      summary: Get Books
       tags:
       - Book
   /user/login:

@@ -9,5 +9,5 @@ import (
 
 func BookRoutes(router *mux.Router) {
 	router.HandleFunc("/book", controllers.Book.CreateBook).Methods(http.MethodPost)
-	router.HandleFunc("/book", controllers.Book.GetBook).Methods(http.MethodGet)
+	router.HandleFunc("/books", controllers.Book.GetBooks).Methods(http.MethodGet)
 }
