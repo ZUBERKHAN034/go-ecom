@@ -15,6 +15,7 @@ type Envs struct {
 	DBAddress  string
 	DBName     string
 	Port       string
+	JwtSecret  string
 }
 
 var Env = initEnv()
@@ -36,5 +37,6 @@ func initEnv() Envs {
 		DBAddress:  os.Getenv("DB_ADDRESS"),
 		DBName:     os.Getenv("DB_NAME"),
 		Port:       os.Getenv("PORT"),
+		JwtSecret:  os.Getenv("JWT_SECRET"),
 	}
 }

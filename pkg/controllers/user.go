@@ -7,6 +7,7 @@ import (
 	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
+	"github.com/go-playground/validator/v10"
 )
 
 type userController struct{}
@@ -46,10 +47,17 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		error := err.(validator.ValidationErrors)
+		lib.WriteError(res, http.StatusBadRequest, error)
+		return
+	}
+
 	// Check if user exists
 	user := models.User.GetByEmail(payload.Email)
 	if user.ID == 0 {
-		lib.WriteError(res, http.StatusBadRequest, errors.New("user not found"))
+		lib.WriteError(res, http.StatusBadRequest, errors.New("email or password is incorrect"))
 		return
 	}
 
@@ -59,7 +67,20 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	lib.WriteSuccess(res, http.StatusOK, "user logged in successfully")
+	// Generate JWT token
+	tokenPayload := map[string]interface{}{
+		"id":    user.ID,
+		"name":  user.FirstName + " " + user.LastName,
+		"email": user.Email,
+	}
+
+	token, err := utils.GenerateJWT(tokenPayload)
+	if err != nil {
+		lib.WriteError(res, http.StatusInternalServerError, err)
+		return
+	}
+
+	lib.WriteJSON(res, http.StatusOK, map[string]string{"token": token})
 }
 
 // Register godoc
@@ -82,6 +103,13 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 	err := lib.ParseJSON(req, &payload)
 	if err != nil {
 		lib.WriteError(res, http.StatusBadRequest, err)
+		return
+	}
+
+	// validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		error := err.(validator.ValidationErrors)
+		lib.WriteError(res, http.StatusBadRequest, error)
 		return
 	}
 
