@@ -27,17 +27,24 @@ func ParseJSON(req *http.Request, payload interface{}) error {
 	return nil
 }
 
-func WriteJSON(res http.ResponseWriter, status int, val any) error {
-	res.Header().Add("Content-Type", "application/json")
+func SendErrorResponse(res http.ResponseWriter, status int, errors interface{}) {
+	response := map[string]interface{}{
+		"success": false,
+		"errors":  errors,
+	}
+	sendJSONResponse(res, status, response)
+}
+
+func SendSuccessResponse(res http.ResponseWriter, status int, data interface{}) {
+	response := map[string]interface{}{
+		"success": true,
+		"data":    data,
+	}
+	sendJSONResponse(res, status, response)
+}
+
+func sendJSONResponse(res http.ResponseWriter, status int, data interface{}) {
+	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(status)
-
-	return json.NewEncoder(res).Encode(val)
-}
-
-func WriteError(res http.ResponseWriter, status int, err error) {
-	WriteJSON(res, status, map[string]string{"error": err.Error()})
-}
-
-func WriteSuccess(res http.ResponseWriter, status int, message string) {
-	WriteJSON(res, status, map[string]string{"message": message})
+	json.NewEncoder(res).Encode(data)
 }

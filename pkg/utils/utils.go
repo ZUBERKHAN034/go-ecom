@@ -5,11 +5,8 @@ import (
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var Validate = validator.New()
 
 func HashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

@@ -35,6 +35,7 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/faceair/jio v1.0.2
 	github.com/go-playground/validator/v10 v10.22.0
 	github.com/joho/godotenv v1.5.1
 	github.com/swaggo/http-swagger/example/gorilla v0.0.0-20230830153024-537f045bded0

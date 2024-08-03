@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
-	"github.com/go-playground/validator/v10"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/validations"
 )
 
 type userController struct{}
@@ -43,27 +42,26 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		lib.WriteError(res, http.StatusBadRequest, err)
+		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
 	// validate the payload
-	if err := utils.Validate.Struct(payload); err != nil {
-		error := err.(validator.ValidationErrors)
-		lib.WriteError(res, http.StatusBadRequest, error)
+	if err := validations.User.Login(payload); err != nil {
+		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Check if user exists
 	user := models.User.GetByEmail(payload.Email)
 	if user.ID == 0 {
-		lib.WriteError(res, http.StatusBadRequest, errors.New("email or password is incorrect"))
+		lib.SendErrorResponse(res, http.StatusBadRequest, "Email or password is incorrect")
 		return
 	}
 
 	// Check if password is correct
 	if !utils.ComparePassword(user.Password, payload.Password) {
-		lib.WriteError(res, http.StatusBadRequest, errors.New("invalid password"))
+		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid password")
 		return
 	}
 
@@ -76,11 +74,11 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 
 	token, err := utils.GenerateJWT(tokenPayload)
 	if err != nil {
-		lib.WriteError(res, http.StatusInternalServerError, err)
+		lib.SendErrorResponse(res, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
 
-	lib.WriteJSON(res, http.StatusOK, map[string]string{"token": token})
+	lib.SendSuccessResponse(res, http.StatusOK, map[string]string{"token": token})
 }
 
 // Register godoc
@@ -102,27 +100,26 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		lib.WriteError(res, http.StatusBadRequest, err)
+		lib.SendErrorResponse(res, http.StatusBadRequest, err)
 		return
 	}
 
 	// validate the payload
-	if err := utils.Validate.Struct(payload); err != nil {
-		error := err.(validator.ValidationErrors)
-		lib.WriteError(res, http.StatusBadRequest, error)
+	if err := validations.User.Register(payload); err != nil {
+		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Check if user exists
 	if user := models.User.GetByEmail(payload.Email); user.ID != 0 {
-		lib.WriteError(res, http.StatusBadRequest, errors.New("user already exists"))
+		lib.SendErrorResponse(res, http.StatusBadRequest, "User already exists")
 		return
 	}
 
 	// Hash the password
 	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		lib.WriteError(res, http.StatusInternalServerError, err)
+		lib.SendErrorResponse(res, http.StatusInternalServerError, err)
 		return
 	}
 	payload.Password = hashedPassword
@@ -135,7 +132,7 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 		Password:  payload.Password,
 	}))
 
-	lib.WriteSuccess(res, http.StatusCreated, "user Registered successfully")
+	lib.SendErrorResponse(res, http.StatusCreated, "user Registered successfully")
 }
 
 var User = &userController{}

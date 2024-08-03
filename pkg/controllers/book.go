@@ -35,14 +35,14 @@ func (b *bookController) CreateBook(res http.ResponseWriter, req *http.Request) 
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		lib.WriteError(res, http.StatusBadRequest, err)
+		lib.SendErrorResponse(res, http.StatusBadRequest, err)
 		return
 	}
 
 	// check if book already exists
 	book := models.Book.GetByTitle(payload.Title)
 	if book.ID != 0 {
-		lib.WriteError(res, http.StatusBadRequest, errors.New("book already exists"))
+		lib.SendErrorResponse(res, http.StatusBadRequest, errors.New("book already exists"))
 		return
 	}
 
@@ -54,7 +54,7 @@ func (b *bookController) CreateBook(res http.ResponseWriter, req *http.Request) 
 		Price:  payload.Price,
 	})
 
-	lib.WriteSuccess(res, http.StatusOK, "book created successfully")
+	lib.SendErrorResponse(res, http.StatusOK, "book created successfully")
 }
 
 //	GetBook godoc
@@ -68,7 +68,7 @@ func (b *bookController) CreateBook(res http.ResponseWriter, req *http.Request) 
 // @Router /books [get]
 func (b *bookController) GetBooks(res http.ResponseWriter, req *http.Request) {
 	books := models.Book.GetAll()
-	lib.WriteJSON(res, http.StatusOK, books)
+	lib.SendSuccessResponse(res, http.StatusOK, books)
 }
 
 var Book = &bookController{}
