@@ -3,18 +3,11 @@ package validations
 import (
 	"encoding/json"
 	"errors"
-	"regexp"
 
 	"github.com/faceair/jio"
 )
 
 type userValidation struct{}
-
-// Custom function to match regex
-func RegexMatch(value string, pattern string) bool {
-	re := regexp.MustCompile(pattern)
-	return re.MatchString(value)
-}
 
 func (u *userValidation) Login(payload interface{}) error {
 	// Define the schema for the payloads

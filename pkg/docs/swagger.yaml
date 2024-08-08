@@ -1,14 +1,16 @@
 definitions:
-  controllers.CreateBookPayload:
+  controllers.CreateProductPayload:
     properties:
-      author:
+      description:
         type: string
-      pages:
-        type: integer
+      image:
+        type: string
+      name:
+        type: string
       price:
+        type: number
+      quantity:
         type: integer
-      title:
-        type: string
     type: object
   controllers.LoginUserPayload:
     properties:
@@ -28,6 +30,35 @@ definitions:
       password:
         type: string
     type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.ProductSchema:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
 info:
   contact: {}
   description: This is E-Commerce API server
@@ -35,47 +66,49 @@ info:
   title: E-Commerce API
   version: "1.0"
 paths:
-  /book:
+  /product:
     post:
       consumes:
       - application/json
-      description: Create Book
+      description: Create Product
       parameters:
-      - description: Book Payload
+      - description: Product Payload
         in: body
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/controllers.CreateBookPayload'
+          $ref: '#/definitions/controllers.CreateProductPayload'
       produces:
       - application/json
       responses:
         "200":
-          description: Book created successfully
+          description: Product created successfully
           schema:
             type: string
         "400":
-          description: Book already exists
+          description: Product already exists
           schema:
             type: string
-      summary: Create Book
+      summary: Create Product
       tags:
-      - Book
-  /books:
+      - Product
+  /products:
     get:
       consumes:
       - application/json
-      description: Get Book
+      description: Get Products
       produces:
       - application/json
       responses:
         "200":
-          description: Hello Book Service
+          description: List of products
           schema:
-            type: string
-      summary: Get Books
+            items:
+              $ref: '#/definitions/models.ProductSchema'
+            type: array
+      summary: Get Products
       tags:
-      - Book
+      - Product
   /user/login:
     post:
       consumes:

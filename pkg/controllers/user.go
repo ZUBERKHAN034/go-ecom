@@ -40,9 +40,8 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 	var payload LoginUserPayload
 
 	// Parse the request body
-	err := lib.ParseJSON(req, &payload)
-	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid request payload")
+	if err := lib.ParseJSON(req, &payload); err != nil {
+		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -100,7 +99,7 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 	// Parse the request body
 	err := lib.ParseJSON(req, &payload)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err)
+		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -119,7 +118,7 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 	// Hash the password
 	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusInternalServerError, err)
+		lib.SendErrorResponse(res, http.StatusInternalServerError, err.Error())
 		return
 	}
 	payload.Password = hashedPassword

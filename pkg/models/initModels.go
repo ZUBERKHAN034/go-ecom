@@ -13,5 +13,5 @@ func init() {
 
 	// Migrate the schemas
 	DBInstance.AutoMigrate(&UserSchema{})
-	DBInstance.AutoMigrate(&BookSchema{})
+	DBInstance.AutoMigrate(&ProductSchema{})
 }

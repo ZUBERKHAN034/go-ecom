@@ -2,26 +2,18 @@ package lib
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
-// CustomError represents a custom error with a message.
-type CustomError struct {
-	Message string
-}
-
-func (customError *CustomError) Error() string {
-	return customError.Message
-}
-
 func ParseJSON(req *http.Request, payload interface{}) error {
 	if req.Body == nil {
-		return &CustomError{Message: "missing request body"}
+		return errors.New("request body can not be empty")
 	}
 
 	err := json.NewDecoder(req.Body).Decode(payload)
 	if err != nil {
-		return &CustomError{Message: "failed to decode request body"}
+		return errors.New("invalid request payload")
 	}
 
 	return nil

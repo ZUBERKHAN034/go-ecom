@@ -16,9 +16,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/book": {
+        "/product": {
             "post": {
-                "description": "Create Book",
+                "description": "Create Product",
                 "consumes": [
                     "application/json"
                 ],
@@ -26,29 +26,29 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Book"
+                    "Product"
                 ],
-                "summary": "Create Book",
+                "summary": "Create Product",
                 "parameters": [
                     {
-                        "description": "Book Payload",
+                        "description": "Product Payload",
                         "name": "payload",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.CreateBookPayload"
+                            "$ref": "#/definitions/controllers.CreateProductPayload"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Book created successfully",
+                        "description": "Product created successfully",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Book already exists",
+                        "description": "Product already exists",
                         "schema": {
                             "type": "string"
                         }
@@ -56,9 +56,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/books": {
+        "/products": {
             "get": {
-                "description": "Get Book",
+                "description": "Get Products",
                 "consumes": [
                     "application/json"
                 ],
@@ -66,14 +66,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Book"
+                    "Product"
                 ],
-                "summary": "Get Books",
+                "summary": "Get Products",
                 "responses": {
                     "200": {
-                        "description": "Hello Book Service",
+                        "description": "List of products",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProductSchema"
+                            }
                         }
                     }
                 }
@@ -167,20 +170,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controllers.CreateBookPayload": {
+        "controllers.CreateProductPayload": {
             "type": "object",
             "properties": {
-                "author": {
+                "description": {
                     "type": "string"
                 },
-                "pages": {
-                    "type": "integer"
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "number"
                 },
-                "title": {
-                    "type": "string"
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },
@@ -208,6 +214,50 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.ProductSchema": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
