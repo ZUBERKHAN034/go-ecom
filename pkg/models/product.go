@@ -34,4 +34,10 @@ func (p *ProductSchema) GetAll() []ProductSchema {
 	return products
 }
 
+func (p *ProductSchema) GetProductsByIDs(productIDs []uint) []ProductSchema {
+	var products []ProductSchema
+	DBInstance.Where("id IN ?", productIDs).Find(&products)
+	return products
+}
+
 var Product = &ProductSchema{}

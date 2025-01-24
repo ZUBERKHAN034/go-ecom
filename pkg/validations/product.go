@@ -10,6 +10,12 @@ import (
 type productValidation struct{}
 
 func (p *productValidation) CreateProduct(payload interface{}) error {
+	// Marshal the payload to JSON
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return errors.New("failed to marshal payload to JSON: " + err.Error())
+	}
+
 	// Define the schema for the payloads
 	schema := jio.Object().Keys(jio.K{
 		"name":        jio.String().Required(),
@@ -18,12 +24,6 @@ func (p *productValidation) CreateProduct(payload interface{}) error {
 		"price":       jio.Number().Required(),
 		"quantity":    jio.Number().Required(),
 	})
-
-	// Marshal the payload to JSON
-	payloadBytes, err := json.Marshal(payload)
-	if err != nil {
-		return errors.New("failed to marshal payload to JSON: " + err.Error())
-	}
 
 	// Validate the JSON payload against the schema
 	if _, err := jio.ValidateJSON(&payloadBytes, schema); err != nil {

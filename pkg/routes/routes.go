@@ -8,4 +8,5 @@ func InitRoutes(router *mux.Router) {
 	SwaggerRoutes(router)
 	UserRoutes(router)
 	ProductRoutes(router)
+	OrderRoutes(router)
 }

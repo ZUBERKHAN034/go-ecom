@@ -10,6 +10,12 @@ import (
 type userValidation struct{}
 
 func (u *userValidation) Login(payload interface{}) error {
+	// Marshal the payload to JSON
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return errors.New("failed to marshal payload to JSON: " + err.Error())
+	}
+
 	// Define the schema for the payloads
 	schema := jio.Object().Keys(jio.K{
 		"email": jio.String().Transform(func(ctx *jio.Context) {
@@ -21,12 +27,6 @@ func (u *userValidation) Login(payload interface{}) error {
 		}),
 		"password": jio.String().Min(8).Max(10).Required(),
 	})
-
-	// Marshal the payload to JSON
-	payloadBytes, err := json.Marshal(payload)
-	if err != nil {
-		return errors.New("failed to marshal payload to JSON: " + err.Error())
-	}
 
 	// Validate the JSON payload against the schema
 	if _, err := jio.ValidateJSON(&payloadBytes, schema); err != nil {
