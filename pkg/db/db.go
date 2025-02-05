@@ -4,8 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
 	"github.com/go-sql-driver/mysql"
@@ -16,18 +14,8 @@ import (
 var dbInstance *gorm.DB
 
 func Connect() error {
-	// Construct the path to ca.pem
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	caPath := filepath.Join(dir, "pkg/db", "ca.pem")
-
 	// Read the CA certificate
-	caCert, err := os.ReadFile(caPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	caCert := []byte(config.Env.DBCACert)
 
 	// Create a certificate pool and add the CA certificate
 	certPool := x509.NewCertPool()
