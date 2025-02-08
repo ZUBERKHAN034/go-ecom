@@ -3,6 +3,7 @@ package db
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"log"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
@@ -30,16 +31,24 @@ func Connect() error {
 	mysql.RegisterTLSConfig("custom", tlsConfig)
 
 	// Configure the MySQL DSN
-	dsnConfig := &mysql.Config{
-		User:      config.Env.DBUser,
-		Passwd:    config.Env.DBPassword,
-		Addr:      config.Env.DBAddress,
-		DBName:    config.Env.DBName,
-		ParseTime: true,
-		TLSConfig: "custom",
-		Net:       "tcp",
-	}
-	dsn := dsnConfig.FormatDSN()
+	// dsnConfig := &mysql.Config{
+	// 	User:      config.Env.DBUser,
+	// 	Passwd:    config.Env.DBPassword,
+	// 	Addr:      config.Env.DBAddress,
+	// 	DBName:    config.Env.DBName,
+	// 	ParseTime: true,
+	// 	TLSConfig: "custom",
+	// 	Net:       "tcp",
+	// }
+	// dsn := dsnConfig.FormatDSN()
+
+	// FIX: Configure the MySQL using string format DSN
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?tls=custom&parseTime=True&loc=Local",
+		config.Env.DBUser,
+		config.Env.DBPassword,
+		config.Env.DBAddress,
+		config.Env.DBName,
+	)
 
 	// Open a connection to the database using the gorm mysql driver
 	db, err := gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
