@@ -7,7 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
-
+// HashPassword takes a password string and returns a hashed password string
 func HashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -17,11 +17,13 @@ func HashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
+// ComparePassword takes a hashed password and a password string and returns a boolean
 func ComparePassword(hashedPassword string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }
 
+// GenerateJWT takes a payload and returns a JWT token string
 func GenerateJWT(payload map[string]interface{}) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour).Unix()
 	payload["exp"] = expirationTime
