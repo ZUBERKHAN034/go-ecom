@@ -30,33 +30,64 @@ definitions:
       password:
         type: string
     type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
   models.ProductSchema:
+    description: Product details
     properties:
       createdAt:
+        description: |-
+          CreatedAt represents the timestamp when the product was added
+          @json createdAt
+          @example "2024-03-19T12:00:00Z"
+        example: "2024-03-19T12:00:00Z"
         type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       description:
+        description: |-
+          Description provides details about the product
+          @json description
+          @example "High-quality wireless headphones with noise cancellation."
+        example: High-quality wireless headphones with noise cancellation.
         type: string
       id:
+        description: |-
+          ID is the unique identifier for the product
+          @json id
+          @example 1
+        example: 1
         type: integer
       image:
+        description: |-
+          Image is the URL to the product image
+          @json image
+          @example "https://example.com/images/headphones.jpg"
+        example: https://example.com/images/headphones.jpg
         type: string
       name:
+        description: |-
+          Name of the product
+          @json name
+          @example "Wireless Headphones"
+        example: Wireless Headphones
         type: string
       price:
+        description: |-
+          Price of the product
+          @json price
+          @example 99.99
+        example: 99.99
         type: number
       quantity:
+        description: |-
+          Quantity available in stock
+          @json quantity
+          @example 50
+        example: 50
         type: integer
       updatedAt:
+        description: |-
+          UpdatedAt represents the last updated timestamp of the product
+          @json updatedAt
+          @example "2024-03-19T12:30:00Z"
+        example: "2024-03-19T12:30:00Z"
         type: string
     type: object
 info:

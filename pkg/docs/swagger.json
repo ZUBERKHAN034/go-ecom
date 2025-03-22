@@ -210,47 +210,49 @@
                 }
             }
         },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
         "models.ProductSchema": {
+            "description": "Product details",
             "type": "object",
             "properties": {
                 "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
+                    "description": "CreatedAt represents the timestamp when the product was added\n@json createdAt\n@example \"2024-03-19T12:00:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:00:00Z"
                 },
                 "description": {
-                    "type": "string"
+                    "description": "Description provides details about the product\n@json description\n@example \"High-quality wireless headphones with noise cancellation.\"",
+                    "type": "string",
+                    "example": "High-quality wireless headphones with noise cancellation."
                 },
                 "id": {
-                    "type": "integer"
+                    "description": "ID is the unique identifier for the product\n@json id\n@example 1",
+                    "type": "integer",
+                    "example": 1
                 },
                 "image": {
-                    "type": "string"
+                    "description": "Image is the URL to the product image\n@json image\n@example \"https://example.com/images/headphones.jpg\"",
+                    "type": "string",
+                    "example": "https://example.com/images/headphones.jpg"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "Name of the product\n@json name\n@example \"Wireless Headphones\"",
+                    "type": "string",
+                    "example": "Wireless Headphones"
                 },
                 "price": {
-                    "type": "number"
+                    "description": "Price of the product\n@json price\n@example 99.99",
+                    "type": "number",
+                    "example": 99.99
                 },
                 "quantity": {
-                    "type": "integer"
+                    "description": "Quantity available in stock\n@json quantity\n@example 50",
+                    "type": "integer",
+                    "example": 50
                 },
                 "updatedAt": {
-                    "type": "string"
+                    "description": "UpdatedAt represents the last updated timestamp of the product\n@json updatedAt\n@example \"2024-03-19T12:30:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:30:00Z"
                 }
             }
         }

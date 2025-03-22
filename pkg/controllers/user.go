@@ -131,7 +131,7 @@ func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 		Password:  payload.Password,
 	}))
 
-	lib.SendErrorResponse(res, http.StatusCreated, "user Registered successfully")
+	lib.SendErrorResponse(res, http.StatusCreated, "User registered successfully")
 }
 
 var User = &userController{}

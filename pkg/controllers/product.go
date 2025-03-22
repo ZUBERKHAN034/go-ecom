@@ -31,6 +31,7 @@ type CreateProductPayload struct {
 // @Success 200 {string} string "Product created successfully"
 // @Failure 400 {string} string "Invalid request payload"
 // @Failure 400 {string} string "Product already exists"
+// @Failure 500 {string} string "Internal server error"
 // @Router /product [post]
 func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Request) {
 	var payload CreateProductPayload
@@ -66,6 +67,19 @@ func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Req
 	lib.SendSuccessResponse(res, http.StatusOK, product)
 }
 
+// GetProduct godoc
+//
+// @Summary Get Product
+// @Description Get Product
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param id path string true "Product ID"
+// @Success 200 {object} models.ProductSchema "Product"
+// @Failure 400 {string} string "Invalid product ID"
+// @Failure 404 {string} string "Product not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /product/{id} [get]
 func (p *productController) GetProduct(res http.ResponseWriter, req *http.Request) {
 	// getting product by id
 	idStr := mux.Vars(req)["id"]
@@ -93,6 +107,7 @@ func (p *productController) GetProduct(res http.ResponseWriter, req *http.Reques
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.ProductSchema "List of products"
+// @Failure 500 {string} string "Internal server error"
 // @Router /products [get]
 func (p *productController) GetProducts(res http.ResponseWriter, req *http.Request) {
 	// getting products from the database

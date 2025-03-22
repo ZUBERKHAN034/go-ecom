@@ -11,6 +11,22 @@ import (
 
 type orderController struct{}
 
+// Checkout godoc
+// 
+// @Summary Checkout
+// @Description Checkout
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Param payload body types.OrderPayload true "Order Payload"
+// @Success 200 {object} models.OrderSchema "Order"
+// @Failure 400 {string} string "Invalid request payload"
+// @Failure 400 {string} string "Order items can not be empty"
+// @Failure 400 {string} string "Invalid quantity for product ID"
+// @Failure 400 {string} string "Invalid product IDs"
+// @Failure 400 {string} string "Product not found"
+// @Failure 500 {string} string "Internal server error"
+// @Router /order/checkout [post]
 func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("CHECKOUT CALLED")
 
