@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/app"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/validations"
 )
@@ -20,32 +20,35 @@ type orderController struct{}
 // @Produce json
 // @Param payload body types.OrderPayload true "Order Payload"
 // @Success 200 {object} models.OrderSchema "Order"
-// @Failure 400 {string} string "Invalid request payload"
-// @Failure 400 {string} string "Order items can not be empty"
-// @Failure 400 {string} string "Invalid quantity for product ID"
-// @Failure 400 {string} string "Invalid product IDs"
-// @Failure 400 {string} string "Product not found"
-// @Failure 500 {string} string "Internal server error"
+// @Failure 400 {string} string "invalid request payload"
+// @Failure 400 {string} string "product not found for ID: {productId}"
+// @Failure 400 {string} string "order items can not be empty"
+// @Failure 400 {string} string "invalid quantity for product ID: {productId}"
+// @Failure 400 {string} string "invalid product IDs"
+// @Failure 500 {string} string "internal server error"
 // @Router /order/checkout [post]
 func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
-	fmt.Println("CHECKOUT CALLED")
 
-	// validate the payload
+	// validate the request payload
 	order, err := validations.Order.Checkout(req)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
+		app.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// parse request body
-	// if err := lib.ParseJSON(req, &order); err != nil {
-	// 	lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
-	// 	return
-	// }
+	// check if products exist in the database
+	for _, item := range order.Items {
+		product := models.Product.GetByID(item.ProductID)
+		if product.ID == 0 {
+			errMsg := fmt.Sprintf("product not found for ID: %d", item.ProductID)
+			app.SendErrorResponse(res, http.StatusBadRequest, errMsg)
+			return
+		}
+	}
 
 	// check if order items are empty
 	if len(order.Items) == 0 {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Order items can not be empty")
+		app.SendErrorResponse(res, http.StatusBadRequest, "order items can not be empty")
 		return
 	}
 
@@ -53,7 +56,7 @@ func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
 	productIDs := make([]uint, len(order.Items))
 	for i, item := range order.Items {
 		if item.Quantity <= 0 {
-			lib.SendErrorResponse(res, http.StatusBadRequest, fmt.Errorf("invalid quantity for product ID: %d", item.ProductID))
+			app.SendErrorResponse(res, http.StatusBadRequest, fmt.Errorf("invalid quantity for product ID: %d", item.ProductID))
 			return
 		}
 
@@ -63,11 +66,11 @@ func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
 	// get products from the database
 	products := models.Product.GetProductsByIDs(productIDs)
 	if len(products) != len(order.Items) {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid product IDs")
+		app.SendErrorResponse(res, http.StatusBadRequest, "invalid product IDs")
 		return
 	}
 
-	lib.SendSuccessResponse(res, http.StatusOK, "Order processed successfully")
+	app.SendSuccessResponse(res, http.StatusOK, "order processed successfully")
 }
 
 var Order = &orderController{}

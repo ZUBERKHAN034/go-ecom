@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/config"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
+
 // HashPassword takes a password string and returns a hashed password string
 func HashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -24,13 +27,27 @@ func ComparePassword(hashedPassword string, password string) bool {
 }
 
 // GenerateJWT takes a payload and returns a JWT token string
-func GenerateJWT(payload map[string]interface{}) (string, error) {
+func GenerateJWT(payload any) (string, error) {
+	var jwtPayload map[string]any
+
+	// If payload is already a map, use it directly
+	if p, ok := payload.(map[string]any); ok {
+		jwtPayload = p
+	} else {
+		// Convert struct to map
+		payloadBytes, err := json.Marshal(payload)
+		if err != nil {
+			return "", errors.New("failed to serialize payload")
+		}
+		json.Unmarshal(payloadBytes, &jwtPayload)
+	}
+
 	expirationTime := time.Now().Add(24 * time.Hour).Unix()
-	payload["exp"] = expirationTime
+	jwtPayload["exp"] = expirationTime
 	// Set the expiration time to 24 hours from now
 
 	secret := config.Env.JwtSecret
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(payload))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(jwtPayload))
 	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err

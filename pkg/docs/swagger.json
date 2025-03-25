@@ -8,6 +8,52 @@
         "version": "1.0"
     },
     "paths": {
+        "/order/checkout": {
+            "post": {
+                "description": "Checkout",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Checkout",
+                "parameters": [
+                    {
+                        "description": "Order Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.OrderPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order",
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderSchema"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid product IDs",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/product": {
             "post": {
                 "description": "Create Product",
@@ -28,19 +74,75 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.CreateProductPayload"
+                            "$ref": "#/definitions/types.ProductPayload"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Product created successfully",
+                    "201": {
+                        "description": "Product",
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductSchema"
+                        }
+                    },
+                    "400": {
+                        "description": "product already exists",
                         "schema": {
                             "type": "string"
                         }
                     },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/product/{id}": {
+            "get": {
+                "description": "Get Product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product",
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductSchema"
+                        }
+                    },
                     "400": {
-                        "description": "Product already exists",
+                        "description": "invalid product ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "product not exists",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -70,6 +172,12 @@
                                 "$ref": "#/definitions/models.ProductSchema"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -94,19 +202,25 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.LoginUserPayload"
+                            "$ref": "#/definitions/types.LoginUserPayload"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "User logged in successfully",
+                        "description": "Response Payload",
+                        "schema": {
+                            "$ref": "#/definitions/types.LoginResponsePayload"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid password",
                         "schema": {
                             "type": "string"
                         }
                     },
-                    "400": {
-                        "description": "Invalid password",
+                    "500": {
+                        "description": "internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -134,25 +248,25 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controllers.RegisterUserPayload"
+                            "$ref": "#/definitions/types.RegisterUserPayload"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "User Registered successfully",
+                        "description": "User",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.UserSchema"
                         }
                     },
                     "400": {
-                        "description": "User already exists",
+                        "description": "user already exists",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -162,51 +276,49 @@
         }
     },
     "definitions": {
-        "controllers.CreateProductPayload": {
+        "models.OrderSchema": {
+            "description": "Order details",
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
+                "address": {
+                    "description": "Address where the order needs to be delivered\n@json address\n@example \"123, Street Name, City, Country\"",
+                    "type": "string",
+                    "example": "123, Street Name, City, Country"
                 },
-                "image": {
-                    "type": "string"
+                "createdAt": {
+                    "description": "CreatedAt represents the order creation timestamp\n@json createdAt\n@example \"2024-03-19T12:00:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:00:00Z"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
+                "id": {
+                    "description": "ID is the unique identifier for the order\n@json id\n@example 1",
+                    "type": "integer",
+                    "example": 1
                 },
                 "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
-        "controllers.LoginUserPayload": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
+                    "description": "Quantity of the items in the order\n@json quantity\n@example 2",
+                    "type": "integer",
+                    "example": 2
                 },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.RegisterUserPayload": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
+                "status": {
+                    "description": "Status of the order (e.g., 0 = Pending, 1 = Shipped, 2 = Delivered)\n@json status\n@example 1",
+                    "type": "integer",
+                    "example": 1
                 },
-                "firstName": {
-                    "type": "string"
+                "total": {
+                    "description": "Total cost of the order\n@json total\n@example 99.99",
+                    "type": "number",
+                    "example": 99.99
                 },
-                "lastName": {
-                    "type": "string"
+                "updatedAt": {
+                    "description": "UpdatedAt represents the last update timestamp of the order\n@json updatedAt\n@example \"2024-03-19T12:30:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:30:00Z"
                 },
-                "password": {
-                    "type": "string"
+                "userId": {
+                    "description": "UserID represents the ID of the user who placed the order\n@json userId\n@example 123",
+                    "type": "integer",
+                    "example": 123
                 }
             }
         },
@@ -253,6 +365,120 @@
                     "description": "UpdatedAt represents the last updated timestamp of the product\n@json updatedAt\n@example \"2024-03-19T12:30:00Z\"",
                     "type": "string",
                     "example": "2024-03-19T12:30:00Z"
+                }
+            }
+        },
+        "models.UserSchema": {
+            "description": "User details",
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "CreatedAt represents the timestamp when the user was created\n@json createdAt\n@example \"2024-03-19T12:00:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:00:00Z"
+                },
+                "email": {
+                    "description": "Email of the user\n@json email\n@example \"john.doe@example.com\"",
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "firstName": {
+                    "description": "FirstName of the user\n@json firstName\n@example \"John\"",
+                    "type": "string",
+                    "example": "John"
+                },
+                "id": {
+                    "description": "ID is the unique identifier for the user\n@json id\n@example 1",
+                    "type": "integer",
+                    "example": 1
+                },
+                "lastName": {
+                    "description": "LastName of the user\n@json lastName\n@example \"Doe\"",
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "updatedAt": {
+                    "description": "UpdatedAt represents the last updated timestamp of the user\n@json updatedAt\n@example \"2024-03-19T12:30:00Z\"",
+                    "type": "string",
+                    "example": "2024-03-19T12:30:00Z"
+                }
+            }
+        },
+        "types.LoginResponsePayload": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginUserPayload": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.OrderItemPayload": {
+            "type": "object",
+            "properties": {
+                "productId": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.OrderPayload": {
+            "type": "object",
+            "properties": {
+                "orderItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.OrderItemPayload"
+                    }
+                }
+            }
+        },
+        "types.ProductPayload": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "types.RegisterUserPayload": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         }

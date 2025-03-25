@@ -4,21 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/app"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/validations"
 	"github.com/gorilla/mux"
 )
 
 type productController struct{}
-
-type CreateProductPayload struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Image       string  `json:"image"`
-	Price       float64 `json:"price"`
-	Quantity    int     `json:"quantity"`
-}
 
 // CreateProduct godoc
 //
@@ -27,44 +19,37 @@ type CreateProductPayload struct {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param payload body CreateProductPayload true "Product Payload"
-// @Success 200 {string} string "Product created successfully"
-// @Failure 400 {string} string "Invalid request payload"
-// @Failure 400 {string} string "Product already exists"
-// @Failure 500 {string} string "Internal server error"
+// @Param payload body types.ProductPayload true "Product Payload"
+// @Success 201 {object} models.ProductSchema "Product"
+// @Failure 400 {string} string "invalid request payload"
+// @Failure 400 {string} string "product already exists"
+// @Failure 500 {string} string "internal server error"
 // @Router /product [post]
 func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Request) {
-	var payload CreateProductPayload
 
-	// Parse the request body
-	err := lib.ParseJSON(req, &payload)
+	// validate the request payload
+	product, err := validations.Product.Create(req)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	// validate the payload
-	if err := validations.Product.CreateProduct(payload); err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
+		app.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// check if product already exists
-	if checkProduct := models.Product.GetByName(payload.Name); checkProduct.ID != 0 {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Product already exists")
+	if checkProduct := models.Product.GetByName(product.Name); checkProduct.ID != 0 {
+		app.SendErrorResponse(res, http.StatusBadRequest, "product already exists")
 		return
 	}
 
 	// create new product
-	product := models.Product.Create(&models.ProductSchema{
-		Name:        payload.Name,
-		Description: payload.Description,
-		Image:       payload.Image,
-		Price:       payload.Price,
-		Quantity:    payload.Quantity,
+	createdProduct := models.Product.Create(&models.ProductSchema{
+		Name:        product.Name,
+		Description: product.Description,
+		Image:       product.Image,
+		Price:       product.Price,
+		Quantity:    product.Quantity,
 	})
 
-	lib.SendSuccessResponse(res, http.StatusOK, product)
+	app.SendSuccessResponse(res, http.StatusCreated, createdProduct)
 }
 
 // GetProduct godoc
@@ -76,27 +61,28 @@ func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Req
 // @Produce json
 // @Param id path string true "Product ID"
 // @Success 200 {object} models.ProductSchema "Product"
-// @Failure 400 {string} string "Invalid product ID"
-// @Failure 404 {string} string "Product not found"
-// @Failure 500 {string} string "Internal server error"
+// @Failure 400 {string} string "invalid product ID"
+// @Failure 404 {string} string "product not exists"
+// @Failure 500 {string} string "internal server error"
 // @Router /product/{id} [get]
 func (p *productController) GetProduct(res http.ResponseWriter, req *http.Request) {
+
 	// getting product by id
 	idStr := mux.Vars(req)["id"]
 	// convert id string to uint
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid product ID")
+		app.SendErrorResponse(res, http.StatusBadRequest, "invalid product ID")
 		return
 	}
 
 	product := models.Product.GetByID(uint(id))
 	if product.ID == 0 {
-		lib.SendErrorResponse(res, http.StatusNotFound, "Product not found")
+		app.SendErrorResponse(res, http.StatusNotFound, "product not exists")
 		return
 	}
 
-	lib.SendSuccessResponse(res, http.StatusOK, product)
+	app.SendSuccessResponse(res, http.StatusOK, product)
 }
 
 // GetProducts godoc
@@ -107,12 +93,13 @@ func (p *productController) GetProduct(res http.ResponseWriter, req *http.Reques
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.ProductSchema "List of products"
-// @Failure 500 {string} string "Internal server error"
+// @Failure 500 {string} string "internal server error"
 // @Router /products [get]
 func (p *productController) GetProducts(res http.ResponseWriter, req *http.Request) {
-	// getting products from the database
+
+	// get the products from the database
 	products := models.Product.GetAll()
-	lib.SendSuccessResponse(res, http.StatusOK, products)
+	app.SendSuccessResponse(res, http.StatusOK, products)
 }
 
 var Product = &productController{}

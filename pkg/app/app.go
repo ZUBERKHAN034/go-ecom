@@ -1,4 +1,4 @@
-package lib
+package app
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func ParseJSON(req *http.Request, payload interface{}) error {
+func ParseJSON(req *http.Request, payload any) error {
 	if req.Body == nil {
 		return errors.New("request body can not be empty")
 	}
@@ -19,23 +19,23 @@ func ParseJSON(req *http.Request, payload interface{}) error {
 	return nil
 }
 
-func SendErrorResponse(res http.ResponseWriter, status int, errors interface{}) {
-	response := map[string]interface{}{
+func SendErrorResponse(res http.ResponseWriter, status int, errors any) {
+	response := map[string]any{
 		"success": false,
 		"errors":  errors,
 	}
 	sendJSONResponse(res, status, response)
 }
 
-func SendSuccessResponse(res http.ResponseWriter, status int, data interface{}) {
-	response := map[string]interface{}{
+func SendSuccessResponse(res http.ResponseWriter, status int, data any) {
+	response := map[string]any{
 		"success": true,
 		"data":    data,
 	}
 	sendJSONResponse(res, status, response)
 }
 
-func sendJSONResponse(res http.ResponseWriter, status int, data interface{}) {
+func sendJSONResponse(res http.ResponseWriter, status int, data any) {
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(status)
 	json.NewEncoder(res).Encode(data)

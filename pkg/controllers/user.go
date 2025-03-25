@@ -3,25 +3,14 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/ZUBERKHAN034/go-ecom/pkg/lib"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/app"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/models"
+	"github.com/ZUBERKHAN034/go-ecom/pkg/types"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/utils"
 	"github.com/ZUBERKHAN034/go-ecom/pkg/validations"
 )
 
 type userController struct{}
-
-type LoginUserPayload struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type RegisterUserPayload struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-}
 
 // Login godoc
 //
@@ -30,54 +19,55 @@ type RegisterUserPayload struct {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param payload body LoginUserPayload true "User Payload"
-// @Success 200 {string} string "User logged in successfully"
-// @Failure 400 {string} string "Invalid request payload"
-// @Failure 400 {string} string "User not found"
-// @Failure 400 {string} string "Invalid password"
+// @Param payload body types.LoginUserPayload true "User Payload"
+// @Success 200 {object} types.LoginResponsePayload "Response Payload"
+// @Failure 400 {string} string "invalid request payload"
+// @Failure 400 {string} string "user not exists"
+// @Failure 400 {string} string "invalid password"
+// @Failure 500 {string} string "failed to generate token"
+// @Failure 500 {string} string "internal server error"
 // @Router /user/login [post]
 func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
-	var payload LoginUserPayload
 
-	// Parse the request body
-	if err := lib.ParseJSON(req, &payload); err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
+	// Validate the request payload
+	user, err := validations.User.Login(req)
+	if err != nil {
+		app.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// validate the payload
-	if err := validations.User.Login(payload); err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
-		return
-	}
 
 	// Check if user exists
-	user := models.User.GetByEmail(payload.Email)
-	if user.ID == 0 {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Email or password is incorrect")
+	checkUser := models.User.GetByEmail(user.Email)
+	if checkUser.ID == 0 {
+		app.SendErrorResponse(res, http.StatusBadRequest, "user not exists")
 		return
 	}
 
 	// Check if password is correct
-	if !utils.ComparePassword(user.Password, payload.Password) {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "Invalid password")
+	if !utils.ComparePassword(checkUser.Password, user.Password) {
+		app.SendErrorResponse(res, http.StatusBadRequest, "invalid password")
 		return
 	}
 
 	// Generate JWT token
-	tokenPayload := map[string]interface{}{
-		"id":    user.ID,
-		"name":  user.FirstName + " " + user.LastName,
-		"email": user.Email,
+	tokenPayload := types.TokenPayload{
+		ID:    checkUser.ID,
+		Name:  checkUser.FirstName + " " + checkUser.LastName,
+		Email: checkUser.Email,
 	}
 
 	token, err := utils.GenerateJWT(tokenPayload)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusInternalServerError, "Failed to generate token")
+		app.SendErrorResponse(res, http.StatusInternalServerError, "failed to generate token")
 		return
 	}
 
-	lib.SendSuccessResponse(res, http.StatusOK, map[string]string{"token": token})
+	loginResponse := types.LoginResponsePayload{
+		Token: token,
+	}
+
+	app.SendSuccessResponse(res, http.StatusOK, loginResponse)
 }
 
 // Register godoc
@@ -87,51 +77,47 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param payload body RegisterUserPayload true "User Payload"
-// @Success 201 {string} string "User Registered successfully"
-// @Failure 400 {string} string "Invalid request payload"
-// @Failure 400 {string} string "User already exists"
-// @Failure 500 {string} string "Internal server error"
+// @Param payload body types.RegisterUserPayload true "User Payload"
+// @Success 201 {object} models.UserSchema "User"
+// @Failure 400 {string} string "invalid request payload"
+// @Failure 400 {string} string "user already exists"
+// @Failure 500 {string} string "internal server error"
 // @Router /user/register [post]
 func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
-	var payload RegisterUserPayload
 
-	// Parse the request body
-	err := lib.ParseJSON(req, &payload)
+	// Validate the request payload
+	user, err := validations.User.Register(req)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
+		app.SendErrorResponse(res, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// validate the payload
-	if err := validations.User.Register(payload); err != nil {
-		lib.SendErrorResponse(res, http.StatusBadRequest, err.Error())
-		return
-	}
 
 	// Check if user exists
-	if user := models.User.GetByEmail(payload.Email); user.ID != 0 {
-		lib.SendErrorResponse(res, http.StatusBadRequest, "User already exists")
+	if checkUser := models.User.GetByEmail(user.Email); checkUser.ID != 0 {
+		app.SendErrorResponse(res, http.StatusBadRequest, "user already exists")
 		return
 	}
 
 	// Hash the password
-	hashedPassword, err := utils.HashPassword(payload.Password)
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
-		lib.SendErrorResponse(res, http.StatusInternalServerError, err.Error())
+		app.SendErrorResponse(res, http.StatusInternalServerError, err.Error())
 		return
 	}
-	payload.Password = hashedPassword
+
+	// Set the hashed password
+	user.Password = hashedPassword
 
 	// Create the user
-	models.User.Create((&models.UserSchema{
-		FirstName: payload.FirstName,
-		LastName:  payload.LastName,
-		Email:     payload.Email,
-		Password:  payload.Password,
+	createdUser := models.User.Create((&models.UserSchema{
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Password:  user.Password,
 	}))
 
-	lib.SendErrorResponse(res, http.StatusCreated, "User registered successfully")
+	app.SendSuccessResponse(res, http.StatusCreated, createdUser)
 }
 
 var User = &userController{}
