@@ -1,8 +1,6 @@
 package validations
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/ZUBERKHAN034/go-ecom/pkg/types"
@@ -11,17 +9,8 @@ import (
 
 type productValidation struct{}
 
+// Product Create validation
 func (p *productValidation) Create(req *http.Request) (*types.ProductPayload, error) {
-	// Ensure the body is closed after reading it	
-	defer req.Body.Close()
-
-	// Read the request body
-	reqBodyJson, err := io.ReadAll(req.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	// Define the schema for the payload validation
 	schema := jio.Object().Keys(jio.K{
 		"name":        jio.String().Required(),
 		"description": jio.String().Required(),
@@ -30,20 +19,14 @@ func (p *productValidation) Create(req *http.Request) (*types.ProductPayload, er
 		"quantity":    jio.Number().Required(),
 	})
 
-	// Validate the JSON payload against the schema
-	_, err = jio.ValidateJSON(&reqBodyJson, schema)
-	if err != nil {
-		return nil, err
-	}
-
-	// Unmarshal the validated JSON into the ProductPayload struct
-	var productPayload types.ProductPayload
-	err = json.Unmarshal(reqBodyJson, &productPayload)
-	if err != nil {
-		return nil, err
-	}
-
-	return &productPayload, nil
+	return parseAndValidate[types.ProductPayload](req, schema)
 }
+
+// Product Get validation
+// func (p *productValidation) Get(req *http.Request) (*types.GetProductPayload, error) {
+// 	schema := jio.Object().Keys(jio.K{"id": jio.Number().Required()})
+
+// 	return parseAndValidate[types.GetProductPayload](req, schema)
+// }
 
 var Product = &productValidation{}

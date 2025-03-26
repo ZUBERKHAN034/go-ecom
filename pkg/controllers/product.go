@@ -12,7 +12,7 @@ import (
 
 type productController struct{}
 
-// CreateProduct godoc
+// Create godoc
 //
 // @Summary Create Product
 // @Description Create Product
@@ -25,7 +25,7 @@ type productController struct{}
 // @Failure 400 {string} string "product already exists"
 // @Failure 500 {string} string "internal server error"
 // @Router /product [post]
-func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Request) {
+func (p *productController) Create(res http.ResponseWriter, req *http.Request) {
 
 	// validate the request payload
 	product, err := validations.Product.Create(req)
@@ -52,7 +52,7 @@ func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Req
 	app.SendSuccessResponse(res, http.StatusCreated, createdProduct)
 }
 
-// GetProduct godoc
+// Get godoc
 //
 // @Summary Get Product
 // @Description Get Product
@@ -65,9 +65,9 @@ func (p *productController) CreateProduct(res http.ResponseWriter, req *http.Req
 // @Failure 404 {string} string "product not exists"
 // @Failure 500 {string} string "internal server error"
 // @Router /product/{id} [get]
-func (p *productController) GetProduct(res http.ResponseWriter, req *http.Request) {
+func (p *productController) Get(res http.ResponseWriter, req *http.Request) {
 
-	// getting product by id
+	// get product by id
 	idStr := mux.Vars(req)["id"]
 	// convert id string to uint
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -85,7 +85,7 @@ func (p *productController) GetProduct(res http.ResponseWriter, req *http.Reques
 	app.SendSuccessResponse(res, http.StatusOK, product)
 }
 
-// GetProducts godoc
+// GetAll godoc
 //
 // @Summary Get Products
 // @Description Get Products
@@ -95,7 +95,7 @@ func (p *productController) GetProduct(res http.ResponseWriter, req *http.Reques
 // @Success 200 {array} models.ProductSchema "List of products"
 // @Failure 500 {string} string "internal server error"
 // @Router /products [get]
-func (p *productController) GetProducts(res http.ResponseWriter, req *http.Request) {
+func (p *productController) GetAll(res http.ResponseWriter, req *http.Request) {
 
 	// get the products from the database
 	products := models.Product.GetAll()
