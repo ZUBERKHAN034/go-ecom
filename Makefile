@@ -1,8 +1,3 @@
-export GOPATH=/d/me/go
-export GOMODCACHE=$(GOPATH)/pkg/mod
-export GOCACHE=$(GOPATH)/cache
-export GOTMPDIR=$(GOPATH)/tmp
-
 build:
 	@go build -o bin/go-ecom.exe cmd/main.go
 

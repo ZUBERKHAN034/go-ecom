@@ -42,9 +42,9 @@ func GenerateJWT(payload any) (string, error) {
 		json.Unmarshal(payloadBytes, &jwtPayload)
 	}
 
+	// Set the expiration time to 24 hours from now
 	expirationTime := time.Now().Add(24 * time.Hour).Unix()
 	jwtPayload["exp"] = expirationTime
-	// Set the expiration time to 24 hours from now
 
 	secret := config.Env.JwtSecret
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(jwtPayload))

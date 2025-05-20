@@ -17,6 +17,7 @@ type Envs struct {
 	DBCACert   string
 	Port       string
 	JwtSecret  string
+	BaseURL    string
 }
 
 var Env = initEnv()
@@ -40,5 +41,6 @@ func initEnv() Envs {
 		DBCACert:   os.Getenv("DB_CA_CERT"),
 		Port:       os.Getenv("PORT"),
 		JwtSecret:  os.Getenv("JWT_SECRET"),
+		BaseURL:    os.Getenv("BASE_URL"),
 	}
 }

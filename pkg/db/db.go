@@ -15,6 +15,7 @@ import (
 var dbInstance *gorm.DB
 
 func Connect() error {
+	log.Println("Connecting to database...")
 	// Read the CA certificate
 	caCert := []byte(config.Env.DBCACert)
 
