@@ -12,7 +12,7 @@ import (
 type orderController struct{}
 
 // Checkout godoc
-// 
+//
 // @Summary Checkout
 // @Description Checkout
 // @Tags Order
@@ -36,20 +36,20 @@ func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// check if products exist in the database
-	for _, item := range order.Items {
-		product := models.Product.GetByID(item.ProductID)
-		if product.ID == 0 {
-			errMsg := fmt.Sprintf("product not found for ID: %d", item.ProductID)
-			app.SendErrorResponse(res, http.StatusBadRequest, errMsg)
-			return
-		}
-	}
-
 	// check if order items are empty
 	if len(order.Items) == 0 {
 		app.SendErrorResponse(res, http.StatusBadRequest, "order items can not be empty")
 		return
+	}
+
+	// check if products exist in the database
+	for _, orderItem := range order.Items {
+		product := models.Product.GetByID(orderItem.ProductID)
+		if product.ID == 0 {
+			errMsg := fmt.Sprintf("product not found for ID: %d", orderItem.ProductID)
+			app.SendErrorResponse(res, http.StatusBadRequest, errMsg)
+			return
+		}
 	}
 
 	// validate the order Items and set the Items IDS in the productIDs slice

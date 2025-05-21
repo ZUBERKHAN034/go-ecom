@@ -60,4 +60,4 @@ func (o *OrderSchema) Create(order *OrderSchema) *OrderSchema {
 	return order
 }
 
-var Cart = &OrderSchema{}
+var Order = &OrderSchema{}

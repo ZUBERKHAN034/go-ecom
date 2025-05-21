@@ -8,8 +8,10 @@ import (
 var DBInstance *gorm.DB
 
 func init() {
-	db.Connect()
-	DBInstance = db.GetDB()
+	DBInstance, err := db.Connect()
+	if err != nil {
+		panic("failed to connect to database [ REASON ] => " + err.Error())
+	}
 
 	// Migrate the schemas
 	DBInstance.AutoMigrate(&UserSchema{})

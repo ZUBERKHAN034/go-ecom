@@ -19,7 +19,7 @@ func SwaggerRoutes(router *mux.Router) {
 	}
 
 	swaggerURL := baseUrl + "/swagger/doc.json"
-	log.Println("Swagger UI is available at ", swaggerURL)
+	log.Println("Swagger UI is available at ", baseUrl + "/swagger/index.html") // http://localhost:8080/swagger/index.html
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL(swaggerURL),

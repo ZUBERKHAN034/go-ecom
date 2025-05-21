@@ -7,22 +7,20 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Envs struct {
-	PublicHost string
-	DBPort     string
-	DBUser     string
-	DBPassword string
-	DBAddress  string
-	DBName     string
-	DBCACert   string
-	Port       string
-	JwtSecret  string
-	BaseURL    string
+type envs struct {
+	DBPublicHost string
+	DBUser       string
+	DBPassword   string
+	DBName       string
+	DBCACert     string
+	Port         string
+	JwtSecret    string
+	BaseURL      string
 }
 
 var Env = initEnv()
 
-func initEnv() Envs {
+func initEnv() envs {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -31,16 +29,14 @@ func initEnv() Envs {
 	// s3Bucket := os.Getenv("S3_BUCKET")
 	// secretKey := os.Getenv("SECRET_KEY")
 
-	return Envs{
-		PublicHost: os.Getenv("DB_PUBLIC_HOST"),
-		DBPort:     os.Getenv("DB_PORT"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBAddress:  os.Getenv("DB_ADDRESS"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBCACert:   os.Getenv("DB_CA_CERT"),
-		Port:       os.Getenv("PORT"),
-		JwtSecret:  os.Getenv("JWT_SECRET"),
-		BaseURL:    os.Getenv("BASE_URL"),
+	return envs{
+		DBPublicHost: os.Getenv("DB_PUBLIC_HOST"),
+		DBUser:       os.Getenv("DB_USER"),
+		DBPassword:   os.Getenv("DB_PASSWORD"),
+		DBName:       os.Getenv("DB_NAME"),
+		DBCACert:     os.Getenv("DB_CA_CERT"),
+		Port:         os.Getenv("PORT"),
+		JwtSecret:    os.Getenv("JWT_SECRET"),
+		BaseURL:      os.Getenv("BASE_URL"),
 	}
 }
