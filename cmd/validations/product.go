@@ -22,11 +22,4 @@ func (p *productValidation) Create(req *http.Request) (*types.ProductPayload, er
 	return parseAndValidate[types.ProductPayload](req, schema)
 }
 
-// Product Get validation
-// func (p *productValidation) Get(req *http.Request) (*types.GetProductPayload, error) {
-// 	schema := jio.Object().Keys(jio.K{"id": jio.Number().Required()})
-
-// 	return parseAndValidate[types.GetProductPayload](req, schema)
-// }
-
 var Product = &productValidation{}

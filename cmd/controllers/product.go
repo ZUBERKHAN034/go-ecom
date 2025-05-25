@@ -62,6 +62,7 @@ func (p *productController) Create(res http.ResponseWriter, req *http.Request) {
 // @Produce json
 // @Param id path string true "Product ID"
 // @Success 200 {object} models.ProductSchema "Product"
+// @Failure 400 {string} string "product ID is required"
 // @Failure 400 {string} string "invalid product ID"
 // @Failure 404 {string} string "product not exists"
 // @Failure 500 {string} string "internal server error"
@@ -71,6 +72,12 @@ func (p *productController) Get(res http.ResponseWriter, req *http.Request) {
 
 	// Get the product ID from the request URL
 	idStr := mux.Vars(req)["id"]
+
+	// Validate the product ID
+	if idStr == "" {
+		app.SendErrorResponse(res, http.StatusBadRequest, "product ID is required")
+		return
+	}
 
 	// Convert the ID from string to uint
 	id, err := strconv.ParseUint(idStr, 10, 32)
