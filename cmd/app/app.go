@@ -1,28 +1,42 @@
 package app
 
 import (
-	"log"
+	"encoding/json"
+	"errors"
 	"net/http"
-
-	"github.com/ZUBERKHAN034/go-ecom/pkg/routes"
-	"github.com/gorilla/mux"
 )
 
-type APIServer struct {
-	addr string
-}
-
-func InitAPIServer(addr string) *APIServer {
-	return &APIServer{
-		addr: addr,
+func ParseJSON(req *http.Request, payload any) error {
+	if req.Body == nil {
+		return errors.New("request body can not be empty")
 	}
+
+	err := json.NewDecoder(req.Body).Decode(payload)
+	if err != nil {
+		return errors.New("invalid request payload")
+	}
+
+	return nil
 }
 
-func (apiServer *APIServer) RUN() error {
-	router := mux.NewRouter()
-	routes.InitRoutes(router)
+func SendErrorResponse(res http.ResponseWriter, status int, errors any) {
+	response := map[string]any{
+		"success": false,
+		"errors":  errors,
+	}
+	sendJSONResponse(res, status, response)
+}
 
-	log.Println("Listening on", apiServer.addr)
+func SendSuccessResponse(res http.ResponseWriter, status int, data any) {
+	response := map[string]any{
+		"success": true,
+		"data":    data,
+	}
+	sendJSONResponse(res, status, response)
+}
 
-	return http.ListenAndServe(apiServer.addr, router)
+func sendJSONResponse(res http.ResponseWriter, status int, data any) {
+	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(status)
+	json.NewEncoder(res).Encode(data)
 }

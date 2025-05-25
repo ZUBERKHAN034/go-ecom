@@ -1,0 +1,482 @@
+definitions:
+  models.ProductSchema:
+    description: Product details
+    properties:
+      createdAt:
+        description: |-
+          CreatedAt represents the timestamp when the product was added
+          @json createdAt
+          @example "2024-03-19T12:00:00Z"
+        example: "2024-03-19T12:00:00Z"
+        type: string
+      description:
+        description: |-
+          Description provides details about the product
+          @json description
+          @example "High-quality wireless headphones with noise cancellation."
+        example: High-quality wireless headphones with noise cancellation.
+        type: string
+      id:
+        description: |-
+          ID is the unique identifier for the product
+          @json id
+          @example 1
+        example: 1
+        type: integer
+      image:
+        description: |-
+          Image is the URL to the product image
+          @json image
+          @example "https://example.com/images/headphones.jpg"
+        example: https://example.com/images/headphones.jpg
+        type: string
+      name:
+        description: |-
+          Name of the product
+          @json name
+          @example "Wireless Headphones"
+        example: Wireless Headphones
+        type: string
+      price:
+        description: |-
+          Price of the product
+          @json price
+          @example 99.99
+        example: 99.99
+        type: number
+      quantity:
+        description: |-
+          Quantity available in stock
+          @json quantity
+          @example 50
+        example: 50
+        type: integer
+      updatedAt:
+        description: |-
+          UpdatedAt represents the last updated timestamp of the product
+          @json updatedAt
+          @example "2024-03-19T12:30:00Z"
+        example: "2024-03-19T12:30:00Z"
+        type: string
+    type: object
+  models.UserSchema:
+    description: User details
+    properties:
+      address:
+        description: |-
+          Address of the user
+          @json address
+          @example "123, Street Name, City, Country"
+        example: 123, Street Name, City, Country
+        type: string
+      createdAt:
+        description: |-
+          CreatedAt represents the timestamp when the user was created
+          @json createdAt
+          @example "2024-03-19T12:00:00Z"
+        example: "2024-03-19T12:00:00Z"
+        type: string
+      email:
+        description: |-
+          Email of the user
+          @json email
+          @example "john.doe@example.com"
+        example: john.doe@example.com
+        type: string
+      firstName:
+        description: |-
+          FirstName of the user
+          @json firstName
+          @example "John"
+        example: John
+        type: string
+      id:
+        description: |-
+          ID is the unique identifier for the user
+          @json id
+          @example 1
+        example: 1
+        type: integer
+      lastName:
+        description: |-
+          LastName of the user
+          @json lastName
+          @example "Doe"
+        example: Doe
+        type: string
+      updatedAt:
+        description: |-
+          UpdatedAt represents the last updated timestamp of the user
+          @json updatedAt
+          @example "2024-03-19T12:30:00Z"
+        example: "2024-03-19T12:30:00Z"
+        type: string
+    type: object
+  types.LoginResponsePayload:
+    properties:
+      token:
+        description: |-
+          Token is the JWT token string returned after successful login
+          @json token
+          @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsImFkZHJlc3MiOiIxMjMsIFN0cmVldCBOYW1lLCBDaXR5LCBDb3VudHJ5In0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsImFkZHJlc3MiOiIxMjMsIFN0cmVldCBOYW1lLCBDaXR5LCBDb3VudHJ5In0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        type: string
+    type: object
+  types.LoginUserPayload:
+    properties:
+      email:
+        description: |-
+          Email is the email address of the user
+          @json email
+          @example "john.doe@example.com"
+        example: john.doe@example.com
+        type: string
+      password:
+        description: |-
+          Password is the password for the user account
+          @json password
+          @example "securepassword123"
+        example: securepassword123
+        type: string
+    type: object
+  types.OrderItemPayload:
+    properties:
+      productId:
+        description: |-
+          ProductID is the unique identifier for the product
+          @json productId
+          @example 1
+        example: 1
+        type: integer
+      quantity:
+        description: |-
+          Quantity is the number of units of the product in the order
+          @json quantity
+          @example 2
+        example: 2
+        type: integer
+    type: object
+  types.OrderPayload:
+    properties:
+      orderItems:
+        description: |-
+          List of order items
+          @json orderItems
+        items:
+          $ref: '#/definitions/types.OrderItemPayload'
+        type: array
+    type: object
+  types.OrderResponsePayload:
+    properties:
+      orderId:
+        description: |-
+          OrderID is the unique identifier for the order
+          @json orderId
+          @example 12345
+        example: 12345
+        type: integer
+      orderItems:
+        description: |-
+          order Items is the list of order items in the order
+          @json orderItems
+        items:
+          $ref: '#/definitions/types.OrderItemPayload'
+        type: array
+      status:
+        description: |-
+          Status is the current status of the order
+          @json status
+          @example "pending"
+        example: pending
+        type: string
+      total:
+        description: |-
+          Total is the total cost of the order
+          @json total
+          @example 99.99
+        example: 99.99
+        type: number
+      userId:
+        description: |-
+          UserID is the unique identifier for the user who placed the order
+          @json userId
+          @example 67890
+        example: 67890
+        type: integer
+    type: object
+  types.ProductPayload:
+    properties:
+      description:
+        description: |-
+          Description provides details about the product
+          @json description
+          @example "High-quality wireless headphones with noise cancellation."
+        example: High-quality wireless headphones with noise cancellation.
+        type: string
+      image:
+        description: |-
+          Image is the URL to the product image
+          @json image
+          @example "https://example.com/images/headphones.jpg"
+        example: https://example.com/images/headphones.jpg
+        type: string
+      name:
+        description: |-
+          Name is the name of the product
+          @json name
+          @example "Wireless Headphones"
+        example: Wireless Headphones
+        type: string
+      price:
+        description: |-
+          Price of the product
+          @json price
+          @example 99.99
+        example: 99.99
+        type: number
+      quantity:
+        description: |-
+          Quantity available in stock
+          @json quantity
+          @example 50
+        example: 50
+        type: integer
+    type: object
+  types.RegisterUserPayload:
+    properties:
+      address:
+        description: |-
+          Address is the address of the user
+          @json address
+          @example "123, Street Name, City, Country"
+        example: 123, Street Name, City, Country
+        type: string
+      email:
+        description: |-
+          Email is the email address of the user
+          @json email
+          @example "john.doe@example.com"
+        example: john.doe@example.com
+        type: string
+      firstName:
+        description: |-
+          FirstName is the first name of the user
+          @json firstName
+          @example "John"
+        example: John
+        type: string
+      lastName:
+        description: |-
+          LastName is the last name of the user
+          @json lastName
+          @example "Doe"
+        example: Doe
+        type: string
+      password:
+        description: |-
+          Password is the password for the user account
+          @json password
+          @example "securepassword123"
+        example: securepassword123
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is E-Commerce API server
+  termsOfService: http://github.com/ZUBERKHAN034/go-ecom
+  title: E-Commerce API
+  version: "1.0"
+paths:
+  /order/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Checkout
+      parameters:
+      - description: Order Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.OrderPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Order Response Payload
+          schema:
+            $ref: '#/definitions/types.OrderResponsePayload'
+        "400":
+          description: 'product ''<name>'' (ID: <id>) has only <quantity> quantity
+            available'
+          schema:
+            type: string
+        "404":
+          description: 'product not exists for ID: <id>'
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Checkout
+      tags:
+      - Order
+  /product:
+    post:
+      consumes:
+      - application/json
+      description: Create Product
+      parameters:
+      - description: Product Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.ProductPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product
+          schema:
+            $ref: '#/definitions/models.ProductSchema'
+        "400":
+          description: product already exists
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Product
+      tags:
+      - Product
+  /product/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product
+          schema:
+            $ref: '#/definitions/models.ProductSchema'
+        "400":
+          description: invalid product ID
+          schema:
+            type: string
+        "404":
+          description: product not exists
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Product
+      tags:
+      - Product
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get Products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductSchema'
+            type: array
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Products
+      tags:
+      - Product
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: User Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginUserPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Response Payload
+          schema:
+            $ref: '#/definitions/types.LoginResponsePayload'
+        "400":
+          description: invalid password
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register
+      parameters:
+      - description: User Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterUserPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User
+          schema:
+            $ref: '#/definitions/models.UserSchema'
+        "400":
+          description: user already exists
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Register
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
