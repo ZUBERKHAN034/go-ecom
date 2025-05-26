@@ -36,7 +36,7 @@ A RESTful e-commerce API built with Go, featuring user authentication, product m
 
 ```
 go-ecom/
-├── bin/                    # Compiled binaries
+├── bin/                   # Compiled binaries
 ├── cmd/
 │   ├── app/               # Application initialization
 │   ├── config/            # Environment configuration
@@ -53,8 +53,8 @@ go-ecom/
 ├── example.env            # Environment variables template
 ├── go.mod                 # Go module dependencies
 ├── go.sum                 # Dependency checksums
-├── Makefile              # Build and run commands
-└── run.sh                # Run script
+├── Makefile               # Build and run commands
+└── run.sh                 # Run script
 ```
 
 ## 🚦 Getting Started
