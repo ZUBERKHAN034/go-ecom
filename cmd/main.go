@@ -29,8 +29,9 @@ func main() {
 	routes.InitRoutes(router)
 
 	// Start the server
-	log.Println("Listening on", addr)
 	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatal("Server failed:", err)
+	} else {
+		log.Println("Listening on", addr)
 	}
 }
