@@ -17,9 +17,9 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	addr := ":8080"
-	if config.Env.Port != "" {
-		addr = ":" + config.Env.Port
+	addr := ":" + config.Env.Port
+	if config.Env.Port == "" {
+		addr = ":8080"
 	}
 
 	// Create router
@@ -28,10 +28,8 @@ func main() {
 	// Initialize routes groups
 	routes.InitRoutes(router)
 
-	// Start the server
+	log.Println("Starting server on", addr)
 	if err := http.ListenAndServe(addr, router); err != nil {
-		log.Fatal("Server failed:", err)
-	} else {
-		log.Println("Listening on", addr)
+		log.Fatal("Server failed to start:", err)
 	}
 }
