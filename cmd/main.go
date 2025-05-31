@@ -19,9 +19,6 @@ import (
 func main() {
 
 	port := config.Env.Port
-	if port == "" {
-		port = "8080"
-	}
 	addr := ":" + port
 
 	// Create router

@@ -11,15 +11,9 @@ import (
 )
 
 func SwaggerRoutes(router *mux.Router) {
-	var baseUrl string
-	if config.Env.BaseURL != "" {
-		baseUrl = config.Env.BaseURL
-	} else {
-		log.Fatal("BASE_URL is not set in .env file")
-	}
-
+	baseUrl := config.Env.BaseURL
 	swaggerURL := baseUrl + "/swagger/doc.json"
-	log.Println("Swagger UI is available at ", baseUrl + "/swagger/index.html") // http://localhost:8080/swagger/index.html
+	log.Println("Swagger UI is available at ", baseUrl+"/swagger/index.html")
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL(swaggerURL),

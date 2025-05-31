@@ -19,20 +19,30 @@ type envs struct {
 }
 
 func initEnv() envs {
+	// Try to load .env file, but don't fail if it doesn't exist
+	// This allows the app to work both locally (with .env) and in production (with actual env vars)
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading environments:", err)
+		log.Println("No .env file found, using environment variables")
 	}
 
 	return envs{
-		DBPublicHost: os.Getenv("DB_PUBLIC_HOST"),
-		DBUser:       os.Getenv("DB_USER"),
-		DBPassword:   os.Getenv("DB_PASSWORD"),
-		DBName:       os.Getenv("DB_NAME"),
-		DBCACert:     os.Getenv("DB_CA_CERT"),
-		Port:         os.Getenv("PORT"),
-		JwtSecret:    os.Getenv("JWT_SECRET"),
-		BaseURL:      os.Getenv("BASE_URL"),
+		DBPublicHost: getEnvWithDefault("DB_PUBLIC_HOST", ""),
+		DBUser:       getEnvWithDefault("DB_USER", ""),
+		DBPassword:   getEnvWithDefault("DB_PASSWORD", ""),
+		DBName:       getEnvWithDefault("DB_NAME", ""),
+		DBCACert:     getEnvWithDefault("DB_CA_CERT", ""),
+		Port:         getEnvWithDefault("PORT", "8080"),
+		JwtSecret:    getEnvWithDefault("JWT_SECRET", "qwertyuiopasdfghjklzxcvbnm123456"),
+		BaseURL:      getEnvWithDefault("BASE_URL", "http://localhost:8080"),
 	}
+}
+
+// Helper function to get environment variable with default value
+func getEnvWithDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }
 
 var Env = initEnv()
