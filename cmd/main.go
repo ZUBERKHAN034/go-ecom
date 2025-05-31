@@ -3,11 +3,10 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/ZUBERKHAN034/go-ecom/cmd/config"
 	"github.com/ZUBERKHAN034/go-ecom/cmd/routes"
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 )
 
 // @title           E-Commerce API
@@ -18,15 +17,13 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading environments:", err)
-	}
 
-	port := os.Getenv("PORT")
+	port := config.Env.Port
 	if port == "" {
 		port = "8080"
 	}
 	addr := ":" + port
+
 	// Create router
 	router := mux.NewRouter()
 
