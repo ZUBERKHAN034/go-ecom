@@ -1,7 +1,10 @@
 package config
 
 import (
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type envs struct {
@@ -16,9 +19,9 @@ type envs struct {
 }
 
 func initEnv() envs {
-	// if err := godotenv.Load(); err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading environments:", err)
+	}
 
 	return envs{
 		DBPublicHost: os.Getenv("DB_PUBLIC_HOST"),
