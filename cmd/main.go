@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/ZUBERKHAN034/go-ecom/cmd/config"
 	"github.com/ZUBERKHAN034/go-ecom/cmd/routes"
 	"github.com/gorilla/mux"
 )
@@ -17,11 +17,11 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	addr := ":" + config.Env.Port
-	if config.Env.Port == "" {
-		addr = ":8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-
+	addr := ":" + port
 	// Create router
 	router := mux.NewRouter()
 
