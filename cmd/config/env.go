@@ -18,10 +18,8 @@ type envs struct {
 	BaseURL      string
 }
 
-var Env = initEnv()
-
 func initEnv() envs {
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
@@ -36,3 +34,5 @@ func initEnv() envs {
 		BaseURL:      os.Getenv("BASE_URL"),
 	}
 }
+
+var Env = initEnv()
