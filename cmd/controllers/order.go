@@ -30,7 +30,7 @@ type orderController struct{}
 // @Failure 500 {string} string "failed to process order"
 // @Failure 500 {string} string "internal server error"
 // @Security BearerAuth
-// @Router /order/checkout [post]
+// @Router /orders/checkout [post]
 func (o *orderController) Checkout(res http.ResponseWriter, req *http.Request) {
 
 	// Get the authenticated user from the request context

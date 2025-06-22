@@ -9,5 +9,5 @@ import (
 )
 
 func OrderRoutes(router *mux.Router) {
-	router.Handle("/order/checkout", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Order.Checkout))).Methods(http.MethodPost)
+	router.Handle("/orders/checkout", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Order.Checkout))).Methods(http.MethodPost)
 }

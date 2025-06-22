@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/order/checkout": {
+        "/orders/checkout": {
             "post": {
                 "security": [
                     {
@@ -73,7 +73,42 @@ const docTemplate = `{
                 }
             }
         },
-        "/product": {
+        "/products": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Products",
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProductSchema"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -124,7 +159,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/product/{id}": {
+        "/products/{id}": {
             "get": {
                 "security": [
                     {
@@ -179,44 +214,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/products": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get Products",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Get Products",
-                "responses": {
-                    "200": {
-                        "description": "List of products",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.ProductSchema"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/login": {
+        "/users/login": {
             "post": {
                 "description": "Login",
                 "consumes": [
@@ -262,7 +260,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/users/register": {
             "post": {
                 "description": "Register",
                 "consumes": [

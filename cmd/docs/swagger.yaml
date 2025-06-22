@@ -287,7 +287,7 @@ info:
   title: E-Commerce API
   version: "1.0"
 paths:
-  /order/checkout:
+  /orders/checkout:
     post:
       consumes:
       - application/json
@@ -324,7 +324,29 @@ paths:
       summary: Checkout
       tags:
       - Order
-  /product:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get Products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            items:
+              $ref: '#/definitions/models.ProductSchema'
+            type: array
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Products
+      tags:
+      - Product
     post:
       consumes:
       - application/json
@@ -356,7 +378,7 @@ paths:
       summary: Create Product
       tags:
       - Product
-  /product/{id}:
+  /products/{id}:
     get:
       consumes:
       - application/json
@@ -391,30 +413,7 @@ paths:
       summary: Get Product
       tags:
       - Product
-  /products:
-    get:
-      consumes:
-      - application/json
-      description: Get Products
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: List of products
-          schema:
-            items:
-              $ref: '#/definitions/models.ProductSchema'
-            type: array
-        "500":
-          description: internal server error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Products
-      tags:
-      - Product
-  /user/login:
+  /users/login:
     post:
       consumes:
       - application/json
@@ -444,7 +443,7 @@ paths:
       summary: Login
       tags:
       - User
-  /user/register:
+  /users/register:
     post:
       consumes:
       - application/json

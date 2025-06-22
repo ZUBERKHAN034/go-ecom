@@ -26,7 +26,7 @@ type userController struct{}
 // @Failure 400 {string} string "invalid password"
 // @Failure 500 {string} string "failed to generate token"
 // @Failure 500 {string} string "internal server error"
-// @Router /user/login [post]
+// @Router /users/login [post]
 func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 
 	// Validate the request payload
@@ -83,7 +83,7 @@ func (u *userController) Login(res http.ResponseWriter, req *http.Request) {
 // @Failure 400 {string} string "invalid request payload"
 // @Failure 400 {string} string "user already exists"
 // @Failure 500 {string} string "internal server error"
-// @Router /user/register [post]
+// @Router /users/register [post]
 func (u *userController) Register(res http.ResponseWriter, req *http.Request) {
 
 	// Validate the request payload

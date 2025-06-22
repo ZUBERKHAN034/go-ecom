@@ -9,7 +9,7 @@ import (
 )
 
 func ProductRoutes(router *mux.Router) {
-	router.Handle("/product", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Product.Create))).Methods(http.MethodPost)
-	router.Handle("/product/{id}", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Product.Get))).Methods(http.MethodGet)
+	router.Handle("/products", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Product.Create))).Methods(http.MethodPost)
+	router.Handle("/products/{id}", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Product.Get))).Methods(http.MethodGet)
 	router.Handle("/products", middlewares.AuthWithJWT(http.HandlerFunc(controllers.Product.GetAll))).Methods(http.MethodGet)
 }

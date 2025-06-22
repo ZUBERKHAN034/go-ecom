@@ -25,7 +25,7 @@ type productController struct{}
 // @Failure 400 {string} string "product already exists"
 // @Failure 500 {string} string "internal server error"
 // @Security BearerAuth
-// @Router /product [post]
+// @Router /products [post]
 func (p *productController) Create(res http.ResponseWriter, req *http.Request) {
 
 	// Validate the request payload
@@ -67,7 +67,7 @@ func (p *productController) Create(res http.ResponseWriter, req *http.Request) {
 // @Failure 404 {string} string "product not exists"
 // @Failure 500 {string} string "internal server error"
 // @Security BearerAuth
-// @Router /product/{id} [get]
+// @Router /products/{id} [get]
 func (p *productController) Get(res http.ResponseWriter, req *http.Request) {
 
 	// Get the product ID from the request URL
